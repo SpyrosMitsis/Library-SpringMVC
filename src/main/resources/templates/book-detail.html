@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{book.title}</title>
+</head>
+<body>
+<h1 th:text="${book.title}"></h1>
+<p th:text="${book.description}"></p>
+<p th:text="${book.releaseDate}"></p>
+<img th:src="${book.coverUrl}" alt="Book Image" />
+</body>
+</html>

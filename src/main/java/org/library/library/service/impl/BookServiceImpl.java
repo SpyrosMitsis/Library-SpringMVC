@@ -20,4 +20,9 @@ public class BookServiceImpl implements BookService {
     public List<Book> findAll() {
         return bookRepository.findAll();
     }
+
+    @Override
+    public Book findByIsbn(String isbn) {
+        return bookRepository.findByIsbn(isbn);
+    }
 }
