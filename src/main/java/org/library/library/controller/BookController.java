@@ -1,4 +1,5 @@
 package org.library.library.controller;
+import org.library.library.dto.BookListDto;
 import org.library.library.model.Book;
 import org.library.library.service.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +22,7 @@ public class BookController {
 
     @GetMapping("/books")
     public String getAllBooks(Model model) {
-        List<Book> books = bookService.findAll();
+        List<BookListDto> books = bookService.findAll();
         model.addAttribute("books", books);
         return "index";
     }

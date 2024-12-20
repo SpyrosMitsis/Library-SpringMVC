@@ -1,11 +1,16 @@
 package org.library.library.service.impl;
 
+import org.library.library.dto.BookListDto;
+import org.library.library.mapper.BookMapper;
 import org.library.library.model.Book;
 import org.library.library.repository.BookRepository;
 import org.library.library.service.BookService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
+
+import static org.library.library.mapper.BookMapper.mapToBookListDto;
 
 @Service
 public class BookServiceImpl implements BookService {
@@ -17,8 +22,9 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public List<Book> findAll() {
-        return bookRepository.findAll();
+    public List<BookListDto> findAll() {
+        List<Book> books = bookRepository.findAll();
+        return books.stream().map((book) -> mapToBookListDto(book)).collect(Collectors.toList());
     }
 
     @Override
