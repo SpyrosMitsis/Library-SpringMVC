@@ -3,9 +3,11 @@ package org.library.library.service.impl;
 import org.library.library.model.Author;
 import org.library.library.repository.AuthorRepository;
 import org.library.library.service.AuthorService;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
 public class AuthorServiceImpl implements AuthorService {
 
     private final AuthorRepository authorRepository;

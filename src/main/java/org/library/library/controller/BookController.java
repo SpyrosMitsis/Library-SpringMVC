@@ -1,7 +1,9 @@
 package org.library.library.controller;
 import org.library.library.dto.BookListDto;
 import org.library.library.model.Book;
+import org.library.library.service.AuthorService;
 import org.library.library.service.BookService;
+import org.library.library.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,10 +16,15 @@ import java.util.List;
 @Controller
 public class BookController {
     private final BookService bookService;
+    private final AuthorService authorService;
+    private final CategoryService categoryService;
+
 
     @Autowired
-    public BookController(BookService bookService) {
+    public BookController(BookService bookService, AuthorService authorService, CategoryService categoryService) {
         this.bookService = bookService;
+        this.authorService = authorService;
+        this.categoryService = categoryService;
     }
 
 
@@ -33,5 +40,11 @@ public class BookController {
         Book book = bookService.findByIsbn(bookId);
         model.addAttribute("book", book);
         return "book-detail";
+    }
+    @GetMapping("/add")
+    public String showAddBookForm(Model model) {
+        model.addAttribute("authors", authorService.findAll());
+        model.addAttribute("categories", categoryService.findAll());
+        return "add-book";
     }
 }
