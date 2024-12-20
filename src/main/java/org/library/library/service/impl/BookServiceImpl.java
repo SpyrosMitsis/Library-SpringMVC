@@ -43,4 +43,12 @@ public class BookServiceImpl implements BookService {
         bookRepository.delete(book);
     }
 
+    @Override
+    public Book addBook(Book book) {
+        if (bookRepository.existsById(book.getIsbn())) {
+            throw new IllegalArgumentException("Book with ISBN " + book.getIsbn() + " already exists");
+        }
+        return bookRepository.save(book);
+    }
+
 }

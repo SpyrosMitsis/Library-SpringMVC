@@ -48,43 +48,42 @@ public class Book {
     @EqualsAndHashCode.Exclude
     private Set<Category> categories = new HashSet<>();
 
-//    // Custom getters for collections to prevent concurrent modification
-//    public Set<Rating> getRatings() {
-//        return Collections.unmodifiableSet(ratings);
-//    }
-//
-//    public Set<Author> getAuthors() {
-//        return Collections.unmodifiableSet(authors);
-//    }
-//
-//    public Set<Category> getCategories() {
-//        return Collections.unmodifiableSet(categories);
-//    }
-//
-//    // Helper methods for managing relationships
-//    public void addAuthor(Author author) {
-//        authors.add(author);
-//    }
-//
-//    public void removeAuthor(Author author) {
-//        authors.remove(author);
-//    }
-//
-//    public void addCategory(Category category) {
-//        categories.add(category);
-//    }
-//
-//    public void removeCategory(Category category) {
-//        categories.remove(category);
-//    }
-//
-//    public void addRating(Rating rating) {
-//        ratings.add(rating);
-//        rating.setBook(this);
-//    }
-//
-//    public void removeRating(Rating rating) {
-//        ratings.remove(rating);
-//        rating.setBook(null);
-//    }
+    public Set<Rating> getRatings() {
+        return Collections.unmodifiableSet(ratings);
+    }
+
+    public Set<Author> getAuthors() {
+        return Collections.unmodifiableSet(authors);
+    }
+
+    public Set<Category> getCategories() {
+        return Collections.unmodifiableSet(categories);
+    }
+
+    // Helper methods for managing relationships
+    public void addAuthor(Author author) {
+        authors.add(author);
+    }
+
+    public void removeAuthor(Author author) {
+        authors.remove(author);
+    }
+
+    public void addCategory(Category category) {
+        categories.add(category);
+    }
+
+    public void removeCategory(Category category) {
+        categories.remove(category);
+    }
+
+    public void addRating(Rating rating) {
+        ratings.add(rating);
+        rating.setBook(this);
+    }
+
+    public void removeRating(Rating rating) {
+        ratings.remove(rating);
+        rating.setBook(null);
+    }
 }
