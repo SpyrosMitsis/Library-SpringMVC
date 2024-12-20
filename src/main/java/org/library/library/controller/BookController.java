@@ -1,10 +1,9 @@
-package controller;
-
-import model.Book;
+package org.library.library.controller;
+import org.library.library.model.Book;
+import org.library.library.service.BookService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import service.BookService;
 
 import java.util.List;
 

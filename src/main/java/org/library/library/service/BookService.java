@@ -1,6 +1,6 @@
-package service;
+package org.library.library.service;
 
-import model.Book;
+import org.library.library.model.Book;
 
 import java.util.List;
 

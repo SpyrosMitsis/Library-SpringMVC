@@ -1,8 +1,9 @@
-package service.impl;
+package org.library.library.service.impl;
 
-import model.Book;
-import repository.BookRepository;
-import service.BookService;
+
+import org.library.library.model.Book;
+import org.library.library.repository.BookRepository;
+import org.library.library.service.BookService;
 
 import java.util.List;
 
