@@ -25,4 +25,16 @@ public class BookServiceImpl implements BookService {
     public Book findByIsbn(String isbn) {
         return bookRepository.findByIsbn(isbn);
     }
+
+    @Override
+    public Book save(Book book) {
+        return bookRepository.save(book);
+
+    }
+
+    @Override
+    public void delete(Book book) {
+        bookRepository.delete(book);
+    }
+
 }
