@@ -40,20 +40,20 @@ public class BookController {
         return "book-list";
     }
 
-    @GetMapping("/book/{bookId}")
+    @GetMapping("/books/{bookId}")
     public String getAllBooks(@PathVariable String bookId, Model model) {
         Book book = bookService.findByIsbn(bookId);
         model.addAttribute("book", book);
         return "book-detail";
     }
-    @GetMapping("/book/add")
+    @GetMapping("/books/add")
     public String showAddBookForm(Model model) {
         model.addAttribute("authors", authorService.findAll());
         model.addAttribute("categories", categoryService.findAll());
         return "add-book";
     }
 
-    @PostMapping("/book/add")
+    @PostMapping("/books/add")
     public String addBook(@ModelAttribute BookDto bookDTO) {
 
         Book book = BookMapper.mapBookDtoToBook(bookDTO);
@@ -99,7 +99,7 @@ public class BookController {
         }
 
         bookService.save(book);
-        return "redirect:/book/add";
+        return "redirect:/books/add";
     }
     @GetMapping("/")
     public String index() {
