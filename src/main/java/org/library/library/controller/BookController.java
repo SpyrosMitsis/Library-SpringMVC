@@ -37,7 +37,7 @@ public class BookController {
     public String getAllBooks(Model model) {
         List<BookListDto> books = bookService.findAll();
         model.addAttribute("books", books);
-        return "index";
+        return "book-list";
     }
 
     @GetMapping("/book/{bookId}")
@@ -100,5 +100,9 @@ public class BookController {
 
         bookService.save(book);
         return "redirect:/book/add";
+    }
+    @GetMapping("/")
+    public String index() {
+        return "index";
     }
 }
