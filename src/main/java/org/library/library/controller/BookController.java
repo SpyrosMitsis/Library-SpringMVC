@@ -34,16 +34,10 @@ public class BookController {
 
 
     @GetMapping("/books")
-    public String getBooks(Model model) {
-        List<BookListDto> books = bookService.findAll();
-        model.addAttribute("books", books);
-        return "library-index";
-    }
-    @GetMapping("/books/all")
     public String getAllBooks(Model model) {
         List<BookListDto> books = bookService.findAll();
         model.addAttribute("books", books);
-        return "book-list";
+        return "index";
     }
 
     @GetMapping("/books/{bookId}")
