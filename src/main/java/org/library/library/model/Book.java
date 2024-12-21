@@ -15,8 +15,7 @@ public class Book {
 
     private String title;
     private String description;
-    private String smallCoverUrl;
-    private String bigCoverUrl;
+    private String coverUrl;
     private Date releaseDate;
     private Boolean isAvailable;
 

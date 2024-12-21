@@ -40,6 +40,13 @@ public class BookController {
         return "index";
     }
 
+    @GetMapping("/books-list")
+    public String getAllBooksList(Model model) {
+        List<BookListDto> books = bookService.findAll();
+        model.addAttribute("books", books);
+        return "book-list";
+    }
+
     @GetMapping("/books/{bookId}")
     public String getAllBooks(@PathVariable String bookId, Model model) {
         Book book = bookService.findByIsbn(bookId);

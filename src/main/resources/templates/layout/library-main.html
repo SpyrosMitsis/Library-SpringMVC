@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+
+<head th:replace="~{fragments/library/head:: head}">
+  <title th:text="${CONTENT_TITLE} + ' - ' + ${LAYOUT_TITLE}">Library Admin</title>
+<body class="with-welcome-text">
+<div class="container-scroller">
+  <div th:replace="~{fragments/library/header:: header}"></div>
+  <!-- Navbar -->
+<!--  <div th:replace="~{fragments/library/hero:: hero}"></div>-->
+
+  <div class="container-fluid page-body-wrapper">
+    <!-- Sidebar -->
+<!--    <div th:replace="~{fragments/library/latest_product:: latest_product}"></div>-->
+
+    <!-- Main Panel -->
+    <div class="main-panel">
+      <div class="content-wrapper">
+        <!-- Content goes here -->
+        <div layout:fragment="content">
+          <!-- This is where specific page content will be inserted -->
+        </div>
+      </div>
+    </div>
+  </div>
+  <div th:replace="~{fragments/library/footer:: footer}"></div>
+</div>
+
+
+
+<div th:replace="~{fragments/library/scripts:: scripts}"></div>
+
+<div layout:fragment="script"></div>
+</body>
+</html>

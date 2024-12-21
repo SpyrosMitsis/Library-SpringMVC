@@ -15,8 +15,7 @@ public class BookDto{
     private String isbn;
     private String title;
     private String description;
-    private String smallCoverUrl;
-    private String bigCoverUrl;
+    private String coverUrl;
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date releaseDate;
     private Boolean isAvailable;

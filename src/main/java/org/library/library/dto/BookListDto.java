@@ -13,7 +13,7 @@ import java.util.Set;
 public class BookListDto {
     private String isbn;
     private String title;
-    private String smallCoverUrl;
+    private String coverUrl;
     private Date releaseDate;
     private Boolean isAvailable;
     private Set<Author> authors = new HashSet<>();

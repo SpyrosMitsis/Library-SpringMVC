@@ -9,7 +9,7 @@ public class BookMapper {
         return BookListDto.builder()
                 .isbn(book.getIsbn())
                 .title(book.getTitle())
-                .smallCoverUrl(book.getSmallCoverUrl())
+                .coverUrl(book.getCoverUrl())
                 .releaseDate(book.getReleaseDate())
                 .isAvailable(book.getIsAvailable())
                 .authors(book.getAuthors())
@@ -19,8 +19,6 @@ public class BookMapper {
         return Book.builder()
                 .isbn(bookListDto.getIsbn())
                 .title(bookListDto.getTitle())
-                .smallCoverUrl(bookListDto.getSmallCoverUrl())
-                .bigCoverUrl(bookListDto.getBigCoverUrl())
                 .releaseDate(bookListDto.getReleaseDate())
                 .isAvailable(bookListDto.getIsAvailable())
                 .build();
