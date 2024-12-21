@@ -1,0 +1,39 @@
+package org.library.library.controller;
+
+import org.library.library.dto.BookListDto;
+import org.library.library.model.Author;
+import org.library.library.model.Book;
+import org.library.library.service.AuthorService;
+import org.library.library.service.BookService;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+
+import java.util.List;
+
+@Controller
+public class AuthorController {
+    private final AuthorService authorService;
+    private final BookService bookService;
+
+    public AuthorController(AuthorService authorService, BookService bookService) {
+        this.authorService = authorService;
+        this.bookService = bookService;
+    }
+
+    @GetMapping("/authors")
+    public String getAllAuthors(Model model) {
+        List<Author> authors = authorService.findAll();
+        model.addAttribute("authors", authors);
+        return "author-list";
+    }
+    @GetMapping("/authors/{authorId}")
+    public String getAuthorById(@PathVariable Long authorId, Model model) {
+        Author author = authorService.findById(authorId);
+        model.addAttribute("author", author);
+        List<BookListDto> books = bookService.findByAuthorId(authorId);
+        model.addAttribute("books", books);
+        return "author-detail";
+    }
+}

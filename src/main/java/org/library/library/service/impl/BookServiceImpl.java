@@ -1,7 +1,6 @@
 package org.library.library.service.impl;
 
 import org.library.library.dto.BookListDto;
-import org.library.library.mapper.BookMapper;
 import org.library.library.model.Book;
 import org.library.library.repository.BookRepository;
 import org.library.library.service.BookService;
@@ -49,6 +48,12 @@ public class BookServiceImpl implements BookService {
             throw new IllegalArgumentException("Book with ISBN " + book.getIsbn() + " already exists");
         }
         return bookRepository.save(book);
+    }
+
+    @Override
+    public List<BookListDto> findByAuthorId(Long authorId) {
+        List<Book> books = bookRepository.findBooksByAuthorsId(authorId);
+        return books.stream().map((book) -> mapToBookListDto(book)).collect(Collectors.toList());
     }
 
 }
