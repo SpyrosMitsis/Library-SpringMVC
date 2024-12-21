@@ -1,8 +1,18 @@
+<!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
-
-<div th:replace="layout/main :: content">
-    <div>
-        <h1>Dashboard</h1>
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/main}">
+<head>
+    <title>Dashboard</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <!-- Your dashboard content here -->
+    <div class="row">
+        <div class="col-md-12">
+            <h1>Dashboard test</h1>
+        </div>
     </div>
 </div>
+</body>
+</html>
