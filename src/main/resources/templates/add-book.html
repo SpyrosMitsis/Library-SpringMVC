@@ -1,135 +1,108 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/main}">
 <head>
-  <title>Add New Book</title>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css">
+  <title>Dashboard</title>
 </head>
 <body>
-<div class="container mt-5">
-  <h2>Add New Book</h2>
-  <form th:action="@{/book/add}" method="post">
-    <!-- Basic book fields -->
-    <div class="mb-3">
-      <label for="isbn" class="form-label">ISBN</label>
-      <input type="text" class="form-control" id="isbn" name="isbn" required>
-    </div>
+<div layout:fragment="content">
+  <div class="content-wrapper">
+    <div class="row">
+      <div class="col-md-12 grid-margin stretch-card">
+        <div class="card">
+          <div class="card-body">
+            <h4 class="card-title">Add book</h4>
+            <form th:action="@{/books/add}" method="post" class="forms-sample">
+              <!-- Basic Information -->
+              <div class="form-group">
+                <label for="isbn">ISBN</label>
+                <input type="text" class="form-control" id="isbn" name="isbn" placeholder="ISBN" required/>
+              </div>
+              <div class="form-group">
+                <label for="title">Title</label>
+                <input type="text" class="form-control" id="title" name="title" placeholder="Title" required/>
+              </div>
+              <div class="form-group">
+                <label for="description">Description</label>
+                <textarea class="form-control" id="description" name="description" rows="8" style="height: 200px;"></textarea>
+              </div>
+              <div class="form-group">
+                <label for="smallCoverUrl">Small Image URL</label>
+                <input type="url" class="form-control" id="smallCoverUrl" name="smallCoverUrl" placeholder="Small Image URL" />
+              </div>
+              <div class="form-group">
+                <label for="bigCoverUrl">Big Image URL</label>
+                <input type="url" class="form-control" id="bigCoverUrl" name="bigCoverUrl" placeholder="Big Image URL" />
+              </div>
+              <div class="form-group">
+                <label for="releaseDate">Release Date</label>
+                <input type="date" class="form-control" id="releaseDate" name="releaseDate" required/>
+              </div>
 
-    <div class="mb-3">
-      <label for="title" class="form-label">Title</label>
-      <input type="text" class="form-control" id="title" name="title" required>
-    </div>
+              <!-- Authors Section -->
+              <div class="form-group">
+                <label>Authors</label>
+                <select multiple class="form-control" id="authors" name="authorIds" style="height: 100px;">
+                  <option th:each="author : ${authors}"
+                          th:value="${author.id}"
+                          th:text="${author.firstName + ' ' + author.lastName}">
+                  </option>
+                </select>
 
-    <div class="mb-3">
-      <label for="description" class="form-label">Description</label>
-      <textarea class="form-control" id="description" name="description" rows="3"></textarea>
-    </div>
+                <div id="newAuthorsContainer" class="mt-3">
+                  <!-- New authors will be added here -->
+                </div>
 
-    <div class="mb-3">
-      <label for="smallCoverUrl" class="form-label">Small Cover URL</label>
-      <input type="url" class="form-control" id="smallCoverUrl" name="smallCoverUrl">
-    </div>
+                <button type="button" class="btn btn-primary btn-sm mt-2" onclick="addNewAuthor()">
+                  + Add New Author
+                </button>
+              </div>
 
-    <div class="mb-3">
-      <label for="bigCoverUrl" class="form-label">Big Cover URL</label>
-      <input type="url" class="form-control" id="bigCoverUrl" name="bigCoverUrl">
-    </div>
+              <!-- Categories Section -->
+              <div class="form-group">
+                <label>Categories</label>
+                <select multiple class="form-control" id="categories" name="categoryIds" style="height: 100px;">
+                  <option th:each="category : ${categories}"
+                          th:value="${category.id}"
+                          th:text="${category.name}">
+                  </option>
+                </select>
 
-    <div class="mb-3">
-      <label for="releaseDate" class="form-label">Release Date</label>
-      <input type="date" class="form-control" id="releaseDate" name="releaseDate" required>
-    </div>
+                <div id="newCategoriesContainer" class="mt-3">
+                  <!-- New categories will be added here -->
+                </div>
 
-    <!-- Authors section -->
-    <div class="mb-3">
-      <label class="form-label">Authors</label>
-      <div class="mb-2">
-        <select multiple class="form-select" id="authors" name="authorIds">
-          <option th:each="author : ${authors}"
-                  th:value="${author.id}"
-                  th:text="${author.firstName + ' ' + author.lastName}">
-          </option>
-        </select>
+                <button type="button" class="btn btn-primary btn-sm mt-2" onclick="addNewCategory()">
+                  + Add New Category
+                </button>
+              </div>
+
+              <!-- Availability -->
+              <div class="form-group">
+                <div class="form-check">
+                  <label class="form-check-label">
+                    <input type="checkbox" class="form-check-input" id="isAvailable" name="isAvailable" checked>
+                    Available
+                  </label>
+                </div>
+              </div>
+
+              <!-- Form Buttons -->
+              <button type="submit" class="btn btn-primary me-2">Submit</button>
+              <button type="button" class="btn btn-light">Cancel</button>
+            </form>
+          </div>
+        </div>
       </div>
-
-      <div id="newAuthorsContainer">
-        <!-- New authors will be added here -->
-      </div>
-
-      <button type="button" class="btn btn-outline-secondary btn-sm mt-2" onclick="addNewAuthor()">
-        + Add New Author
-      </button>
     </div>
-
-    <!-- Categories section -->
-    <div class="mb-3">
-      <label class="form-label">Categories</label>
-      <div class="mb-2">
-        <select multiple class="form-select" id="categories" name="categoryIds">
-          <option th:each="category : ${categories}"
-                  th:value="${category.id}"
-                  th:text="${category.name}">
-          </option>
-        </select>
-      </div>
-
-      <div id="newCategoriesContainer">
-        <!-- New categories will be added here -->
-      </div>
-
-      <button type="button" class="btn btn-outline-secondary btn-sm mt-2" onclick="addNewCategory()">
-        + Add New Category
-      </button>
-    </div>
-
-    <div class="mb-3 form-check">
-      <input type="checkbox" class="form-check-input" id="isAvailable" name="isAvailable" checked>
-      <label class="form-check-label" for="isAvailable">Available</label>
-    </div>
-
-    <button type="submit" class="btn btn-primary">Add Book</button>
-  </form>
+  </div>
 </div>
 
-<script>
-  let authorCount = 0;
-  let categoryCount = 0;
+<th:block layout:fragment="script">
+  <script th:src="@{/admin/assets/js/add-author.js}"></script>
+  <script th:src="@{/admin/assets/js/add-category.js}"></script>
+</th:block>
 
-  function addNewAuthor() {
-    const container = document.getElementById('newAuthorsContainer');
-    const authorDiv = document.createElement('div');
-    authorDiv.className = 'row g-2 mb-2';
-    authorDiv.innerHTML = `
-        <div class="col-5">
-            <input type="text" class="form-control" name="newAuthors[${authorCount}].firstName" placeholder="First Name" required>
-        </div>
-        <div class="col-5">
-            <input type="text" class="form-control" name="newAuthors[${authorCount}].lastName" placeholder="Last Name" required>
-        </div>
-        <div class="col-2">
-            <button type="button" class="btn btn-outline-danger" onclick="this.parentElement.parentElement.remove()">Remove</button>
-        </div>
-    `;
-    container.appendChild(authorDiv);
-    authorCount++;
-  }
-
-  function addNewCategory() {
-    const container = document.getElementById('newCategoriesContainer');
-    const categoryDiv = document.createElement('div');
-    categoryDiv.className = 'row g-2 mb-2';
-    categoryDiv.innerHTML = `
-        <div class="col-10">
-            <input type="text" class="form-control" name="newCategories[${categoryCount}].name" placeholder="Category Name" required>
-        </div>
-        <div class="col-2">
-            <button type="button" class="btn btn-outline-danger" onclick="this.parentElement.parentElement.remove()">Remove</button>
-        </div>
-    `;
-    container.appendChild(categoryDiv);
-    categoryCount++;
-  }
-</script>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
