@@ -4,16 +4,16 @@
 
 <title th:text="${CONTENT_TITLE} + ' - ' + ${LAYOUT_TITLE}">Library Admin</title>
 
-<head th:replace="~{fragments/head :: head}">
+<head th:replace="~{fragments/admin/head :: head}">
 </head>
 <body class="with-welcome-text">
 <div class="container-scroller">
     <!-- Navbar -->
-    <div th:replace="~{fragments/navbar :: navbar}"></div>
+    <div th:replace="~{fragments/admin/navbar :: navbar}"></div>
 
     <div class="container-fluid page-body-wrapper">
         <!-- Sidebar -->
-        <div th:replace="~{fragments/sidebar :: sidebar}"></div>
+        <div th:replace="~{fragments/admin/sidebar :: sidebar}"></div>
 
         <!-- Main Panel -->
         <div class="main-panel">
@@ -28,7 +28,7 @@
 </div>
 
 <!-- Scripts -->
-<div th:replace="~{fragments/scripts :: scripts}"></div>
+<div th:replace="~{fragments/admin/scripts :: scripts}"></div>
 <div layout:fragment="script"></div>
 </body>
 </html>
