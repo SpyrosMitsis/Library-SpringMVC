@@ -34,7 +34,7 @@
                         <a href="#" class="primary-btn">ADD TO CART</a>
                         <a href="#" class="heart-icon"><span class="icon_heart_alt"></span></a>
                         <ul>
-                            <li><b>Author(s)</b> <span th:text="${#strings.listJoin(book.authors.![firstName + ' ' + lastName], ', ')}">Author Names</span></li>
+                            <li><b>Author(s)</b> <span th:text="${#strings.listJoin(book.authors, ' ' + lastName, ', ')}">Author Names</span></li>
                             <li><b>ISBN</b> <span th:text="${book.isbn}">ISBN Number</span></li>
                             <li><b>Release Date</b><span th:text="${book.releaseDate}"></span></li>
                             <li><b>Share on</b>
