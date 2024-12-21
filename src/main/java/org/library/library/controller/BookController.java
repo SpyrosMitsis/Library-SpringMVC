@@ -103,6 +103,6 @@ public class BookController {
     }
     @GetMapping("/")
     public String index() {
-        return "index";
+        return "dashboard";
     }
 }
