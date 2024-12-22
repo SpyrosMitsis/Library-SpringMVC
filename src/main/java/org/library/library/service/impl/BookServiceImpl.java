@@ -4,6 +4,8 @@ import org.library.library.dto.BookListDto;
 import org.library.library.model.Book;
 import org.library.library.repository.BookRepository;
 import org.library.library.service.BookService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -54,6 +56,10 @@ public class BookServiceImpl implements BookService {
     public List<BookListDto> findByAuthorId(Long authorId) {
         List<Book> books = bookRepository.findBooksByAuthorsId(authorId);
         return books.stream().map((book) -> mapToBookListDto(book)).collect(Collectors.toList());
+    }
+    @Override
+    public Page<Book> findPaginated(PageRequest pageRequest) {
+        return bookRepository.findAll(pageRequest);
     }
 
 }

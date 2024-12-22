@@ -391,5 +391,10 @@
         &:last-child {
             margin-right: 0;
         }
+        &:active {
+            background: $primary-color;
+            border-color: $primary-color;
+            color: $white-color;
+        }
     }
 }

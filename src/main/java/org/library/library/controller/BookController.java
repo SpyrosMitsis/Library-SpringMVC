@@ -9,12 +9,11 @@ import org.library.library.service.AuthorService;
 import org.library.library.service.BookService;
 import org.library.library.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -41,9 +40,18 @@ public class BookController {
     }
 
     @GetMapping("/books-list")
-    public String getAllBooksList(Model model) {
-        List<BookListDto> books = bookService.findAll();
-        model.addAttribute("books", books);
+    public String listBooks(@RequestParam(defaultValue = "1") int page,
+                            @RequestParam(defaultValue = "9") int size,
+                            Model model) {
+        PageRequest pageRequest = PageRequest.of(page - 1, size);
+        Page<Book> bookPage = bookService.findPaginated(pageRequest);
+
+        model.addAttribute("books", bookPage.getContent());
+        model.addAttribute("currentPage", page);
+        model.addAttribute("size", size);
+        model.addAttribute("totalPages", bookPage.getTotalPages());
+        model.addAttribute("totalItems", bookPage.getTotalElements());
+
         return "book-list";
     }
 

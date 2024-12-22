@@ -2,6 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layout/library-main}">
+
 <head>
   <title>Book List</title>
 </head>
@@ -48,11 +49,14 @@
               </div>
             </div>
           </div>
-          <div class="product__pagination">
-            <a href="#">1</a>
-            <a href="#">2</a>
-            <a href="#">3</a>
-            <a href="#"><i class="fa fa-long-arrow-right"></i></a>
+          <div class="product__pagination pagination" th:if="${totalPages > 1}">
+            <a th:href="@{/books-list(page=${currentPage - 1}, size=${size})}" th:if="${currentPage > 1}">&laquo;</a>
+            <span th:each="i : ${#numbers.sequence(1, totalPages)}">
+              <a th:href="@{/books-list(page=${i}, size=${size})}"
+                 th:text="${i}"
+                 th:class="${i == currentPage ? 'active' : ''}"></a>
+            </span>
+            <a th:href="@{/books-list(page=${currentPage + 1}, size=${size})}" th:if="${currentPage < totalPages}">&raquo;</a>
           </div>
         </div>
       </div>
@@ -61,4 +65,3 @@
 </div>
 </body>
 </html>
-

@@ -14,6 +14,7 @@ public class Book {
     private String isbn;
 
     private String title;
+    @Column(length = 1024)
     private String description;
     private String coverUrl;
     private Date releaseDate;
