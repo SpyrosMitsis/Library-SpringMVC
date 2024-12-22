@@ -32,7 +32,7 @@ public class BookController {
     }
 
 
-    @GetMapping("/books")
+    @GetMapping("/home")
     public String getAllBooks(Model model) {
         List<BookListDto> books = bookService.findAll();
         model.addAttribute("books", books);

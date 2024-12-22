@@ -31,10 +31,9 @@
                             <span>(18 reviews)</span>
                         </div>
                         <p th:text="${book.description}">Book description goes here.</p>
-                        <a href="#" class="primary-btn">ADD TO CART</a>
-                        <a href="#" class="heart-icon"><span class="icon_heart_alt"></span></a>
+                        <a href="#" class="primary-btn">LOAN BOOK</a>
                         <ul>
-                            <li><b>Author(s)</b> <span th:text="${#strings.listJoin(book.authors, ' ' + lastName, ', ')}">Author Names</span></li>
+                            <li><b>Author(s)</b> <span th:text="${#strings.listJoin(book.authors.![firstName + ' ' + lastName], ', ')}">Author Names</span></li>
                             <li><b>ISBN</b> <span th:text="${book.isbn}">ISBN Number</span></li>
                             <li><b>Release Date</b><span th:text="${book.releaseDate}"></span></li>
                             <li><b>Share on</b>
@@ -76,7 +75,7 @@
                                     <h6>Additional Information</h6>
                                     <ul>
                                         <li><b>Publisher:</b> <span>Publisher Name</span></li>
-                                        <li><b>Genre:</b> <span>Book Genres</span></li>
+                                        <li><b>Genre:</b> <span >Book Genres</span></li>
                                     </ul>
                                 </div>
                             </div>
@@ -92,7 +91,6 @@
             </div>
         </div>
     </section>
-    <!-- Book Details Section End -->
 </div>
 </body>
 </html>

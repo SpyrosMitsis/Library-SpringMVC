@@ -37,17 +37,20 @@
           <h1>Book List</h1>
           <div class="row">
             <div th:each="book : ${books}" class="col-lg-4 col-md-6 col-sm-6">
-              <div class="product__item">
-                <div class="product__item__pic set-bg" style="display: flex; justify-content: center; align-items: center;">
-                  <img th:src="${book.coverUrl}" alt="Book Cover" style="width: auto; height: 100%;">
+              <a th:href="@{/books/{isbn}(isbn=${book.isbn})}" style="text-decoration: none; color: inherit;">
+                <div class="product__item">
+                  <div class="product__item__pic set-bg" style="display: flex; justify-content: center; align-items: center;">
+                    <img th:src="${book.coverUrl}" alt="Book Cover" style="width: auto; height: 100%;">
+                  </div>
+                  <div class="product__item__text">
+                    <h6><span th:text="${book.title}">Book Title</span></h6>
+                    <p th:text="${#strings.listJoin(book.authors.![firstName + ' ' + lastName], ', ')}">Author Names</p>
+                    <h5 th:text="${'ISBN: ' + book.isbn}">ISBN</h5>
+                  </div>
                 </div>
-                <div class="product__item__text">
-                  <h6><a href="#" th:text="${book.title}">Book Title</a></h6>
-                  <p th:text="${#strings.listJoin(book.authors.![firstName + ' ' + lastName], ', ')}">Author Names</p>
-                  <h5 th:text="${'ISBN: ' + book.isbn}">ISBN</h5>
-                </div>
-              </div>
+              </a>
             </div>
+
           </div>
           <div class="product__pagination pagination" th:if="${totalPages > 1}">
             <a th:href="@{/books-list(page=${currentPage - 1}, size=${size})}" th:if="${currentPage > 1}">&laquo;</a>
