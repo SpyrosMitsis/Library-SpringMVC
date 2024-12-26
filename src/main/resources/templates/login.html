@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/library-main}">
+<head>
+    <title>Register</title>
+</head>
+<div layout:fragment="content">
+    <div class="register-container">
+        <div class="register-header">
+            <h1>Log In</h1>
+            <div th:if="${param.error}" class="alert alert-danger">
+                Invalid username or password
+            </div>
+            <div th:if="${param.logout}" class="alert alert-success">
+                You have been logged out
+            </div>
+            <div th:if="${param.success}" class="alert alert-success">
+                You have successfully registered
+            </div>
+        </div>
+
+        <form th:action="@{/login}" method="post" class="forms-sample form-center" style="padding: 2rem">
+            <div class="form-row">
+                <!-- Username -->
+                <div class="form-group" style="padding: 1rem">
+                    <label for="username">Username</label>
+                    <input type="text"
+                           class="form-control"
+                           id="username"
+                           name="username"
+                           placeholder="Choose a username"
+                           required/>
+                </div>
+
+                <div class="form-group" style="padding: 1rem">
+                    <label for="password">Password</label>
+                    <input type="password"
+                           class="form-control"
+                           id="password"
+                           name="password"
+                           placeholder="Enter password"
+                           required/>
+                </div>
+                <button type="submit" value="Login" class="btn-primary">Login</button>
+            </div>
+        </form>
+        <a th:href="@{/register}">
+            <button type="button" class="btn btn-black">Don't have an account? Register here.</button>
+        </a>
+    </div>
+</html>
+

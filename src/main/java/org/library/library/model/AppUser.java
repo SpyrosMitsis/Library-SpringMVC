@@ -1,15 +1,13 @@
 package org.library.library.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Data
@@ -23,9 +21,16 @@ public class AppUser {
     private String password;
     private String firstName;
     private String lastName;
-    @Enumerated(jakarta.persistence.EnumType.STRING)
-    private Role role;
+
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "user_role",
+            joinColumns = @JoinColumn(name = "username"),
+            inverseJoinColumns = @JoinColumn(name = "role_id"))
+
+    private Set<Role> roles = new HashSet<>();
     @OneToMany(mappedBy = "user")
     private Set<Rating> ratings = new HashSet<>();
+
 
 }
