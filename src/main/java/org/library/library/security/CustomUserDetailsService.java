@@ -1,15 +1,14 @@
 package org.library.library.security;
 
 import org.library.library.model.AppUser;
-import org.library.library.model.Role;
 import org.library.library.repository.AppUserRepository;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
@@ -28,13 +27,18 @@ public class CustomUserDetailsService implements UserDetailsService {
         if (user == null) {
             throw new UsernameNotFoundException("Invalid username or password");
         }
-        else{
-            User authUser = (User) User.builder()
-                    .username(user.getUsername())
-                    .password(user.getPassword())
-                    .authorities(user.getRoles().stream().map(Role::getName).map(SimpleGrantedAuthority::new).collect(Collectors.toList()))
-                    .build();
-            return authUser;
-        }
+
+        // Convert roles to GrantedAuthority
+        List<SimpleGrantedAuthority> authorities = user.getRoles().stream()
+                .map(role -> new SimpleGrantedAuthority("ROLE_" + role.getName()))  // Mapping role to authority
+                .collect(Collectors.toList());
+
+        // Return a Spring Security User object with username, password, and authorities
+        return new org.springframework.security.core.userdetails.User(
+                user.getUsername(),
+                user.getPassword(),
+                authorities
+        );
     }
 }
+
