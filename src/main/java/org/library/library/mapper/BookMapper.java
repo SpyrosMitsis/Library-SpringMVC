@@ -13,14 +13,29 @@ public class BookMapper {
                 .releaseDate(book.getReleaseDate())
                 .isAvailable(book.getIsAvailable())
                 .authors(book.getAuthors())
+                .createdBy(book.getCreatedBy())
                 .build();
     }
     public static Book mapBookDtoToBook(BookDto bookListDto) {
         return Book.builder()
                 .isbn(bookListDto.getIsbn())
                 .title(bookListDto.getTitle())
+                .description(bookListDto.getDescription())
+                .coverUrl(bookListDto.getCoverUrl())
                 .releaseDate(bookListDto.getReleaseDate())
                 .isAvailable(bookListDto.getIsAvailable())
+                .createdBy(bookListDto.getCreatedBy())
+                .build();
+    }
+    public static BookDto mapToBookDto(Book book) {
+        return BookDto.builder()
+                .isbn(book.getIsbn())
+                .title(book.getTitle())
+                .description(book.getDescription())
+                .coverUrl(book.getCoverUrl())
+                .releaseDate(book.getReleaseDate())
+                .isAvailable(book.getIsAvailable())
+                .createdBy(book.getCreatedBy())
                 .build();
     }
 }

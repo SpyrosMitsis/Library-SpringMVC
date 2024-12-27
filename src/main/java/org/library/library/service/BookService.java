@@ -11,6 +11,9 @@ public interface BookService {
     List<BookListDto> findAll();
     Book findByIsbn(String isbn);
     Book save(Book book);
+
+    void update(Book book);
+
     void delete(Book book);
     Book addBook(Book book);
     List<BookListDto> findByAuthorId(Long authorId);

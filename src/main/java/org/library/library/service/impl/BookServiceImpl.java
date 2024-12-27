@@ -1,8 +1,11 @@
 package org.library.library.service.impl;
 
 import org.library.library.dto.BookListDto;
+import org.library.library.model.AppUser;
 import org.library.library.model.Book;
+import org.library.library.repository.AppUserRepository;
 import org.library.library.repository.BookRepository;
+import org.library.library.security.SecurityUtil;
 import org.library.library.service.BookService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -17,9 +20,11 @@ import static org.library.library.mapper.BookMapper.mapToBookListDto;
 public class BookServiceImpl implements BookService {
 
     private final BookRepository bookRepository;
+    private final AppUserRepository appUserRepository;
 
-    public BookServiceImpl(BookRepository bookRepository) {
+    public BookServiceImpl(BookRepository bookRepository, AppUserRepository appUserRepository) {
         this.bookRepository = bookRepository;
+        this.appUserRepository = appUserRepository;
     }
 
     @Override
@@ -35,8 +40,18 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public Book save(Book book) {
+        String username = SecurityUtil.getCurrentUsername();
+        AppUser user = appUserRepository.findByUsername(username);
+        book.setCreatedBy(user);
         return bookRepository.save(book);
 
+    }
+    @Override
+    public void update(Book book) {
+        String username = SecurityUtil.getCurrentUsername();
+        AppUser user = appUserRepository.findByUsername(username);
+        book.setCreatedBy(user);
+        bookRepository.save(book);
     }
 
     @Override

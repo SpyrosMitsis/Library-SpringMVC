@@ -2,6 +2,7 @@ package org.library.library.dto;
 
 import lombok.Builder;
 import lombok.Data;
+import org.library.library.model.AppUser;
 import org.library.library.model.Author;
 
 import java.util.Date;
@@ -17,4 +18,5 @@ public class BookListDto {
     private Date releaseDate;
     private Boolean isAvailable;
     private Set<Author> authors = new HashSet<>();
+    private AppUser createdBy;
 }

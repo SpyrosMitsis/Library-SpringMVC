@@ -1,8 +1,10 @@
 package org.library.library.dto;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.library.library.model.AppUser;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
@@ -11,6 +13,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class BookDto{
     private String isbn;
     private String title;
@@ -23,4 +26,5 @@ public class BookDto{
     private List<Long> categoryIds;
     private List<NewAuthorDto> newAuthors;
     private List<NewCategoryDto> newCategories;
+    private AppUser createdBy;
 }

@@ -39,7 +39,7 @@ public class BookController {
         return "index";
     }
 
-    @GetMapping("/books-list")
+    @GetMapping("/books")
     public String listBooks(@RequestParam(defaultValue = "1") int page,
                             @RequestParam(defaultValue = "9") int size,
                             Model model) {
@@ -61,14 +61,14 @@ public class BookController {
         model.addAttribute("book", book);
         return "book-detail";
     }
-    @GetMapping("/books/add")
+    @GetMapping("admin/books/add")
     public String showAddBookForm(Model model) {
         model.addAttribute("authors", authorService.findAll());
         model.addAttribute("categories", categoryService.findAll());
         return "add-book";
     }
 
-    @PostMapping("/books/add")
+    @PostMapping("admin/books/add")
     public String addBook(@ModelAttribute BookDto bookDTO) {
 
         Book book = BookMapper.mapBookDtoToBook(bookDTO);
@@ -114,9 +114,9 @@ public class BookController {
         }
 
         bookService.save(book);
-        return "redirect:/books/add";
+        return "redirect:admin/books/add";
     }
-    @GetMapping("/")
+    @GetMapping("/admin/dashboard")
     public String index() {
         return "dashboard";
     }

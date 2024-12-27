@@ -48,6 +48,11 @@ public class Book {
     @EqualsAndHashCode.Exclude
     private Set<Category> categories = new HashSet<>();
 
+
+    @ManyToOne
+    @JoinColumn(name = "created_by", nullable = false)
+    private AppUser createdBy;
+
     public Set<Rating> getRatings() {
         return Collections.unmodifiableSet(ratings);
     }
