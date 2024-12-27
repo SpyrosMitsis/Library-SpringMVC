@@ -10,6 +10,9 @@
     <!-- Book Details Section Begin -->
     <section class="product-details spad">
         <div class="container">
+            <div th:if="${param.borrowed}" class="alert alert-success">
+                Book borrowed successfully
+            </div>
             <div class="row">
                 <div class="col-lg-6 col-md-6">
                     <div class="product__details__pic">
@@ -31,7 +34,15 @@
                             <span>(18 reviews)</span>
                         </div>
                         <p th:text="${book.description}">Book description goes here.</p>
-                        <a href="#" class="primary-btn">LOAN BOOK</a>
+
+                        <form th:action="@{/loans/borrow/{isbn}(isbn=${book.isbn})}" method="post">
+                            <button class="primary-btn" type="submit"
+                                    th:disabled="!${book.isAvailable}"
+                                    th:classappend="${!book.isAvailable} ? 'btn-disabled' : ''"
+                                    th:style="${!book.isAvailable} ? 'background-color: #e6e6e6' : ''">
+                                Borrow
+                            </button>
+                        </form>
                         <ul>
                             <li><b>Author(s)</b> <span th:text="${#strings.listJoin(book.authors.![firstName + ' ' + lastName], ', ')}">Author Names</span></li>
                             <li><b>ISBN</b> <span th:text="${book.isbn}">ISBN Number</span></li>

@@ -52,6 +52,6 @@ public class AuthorController {
                 .lastName(authorDTO.getLastName())
                 .build();
         author = authorService.save(author);
-        return "redirect:/admin/authors/add";
+        return "redirect:/admin/authors/add?success";
     }
 }

@@ -13,8 +13,14 @@
         <div class="card">
           <div class="card-body">
             <h4 class="card-title">Add book</h4>
+            <div th:if="${param.error}" class="alert alert-danger">
+              Couldn't add book
+            </div>
+            <div th:if="${param.success}" class="alert alert-success">
+              Book added successfully
+            </div>
             <form th:action="@{admin/books/add}" method="post" class="forms-sample">
-              <!-- Basic Information -->
+              <!-- Existing Basic Information -->
               <div class="form-group">
                 <label for="isbn">ISBN</label>
                 <input type="text" class="form-control" id="isbn" name="isbn" placeholder="ISBN" required/>
@@ -36,7 +42,8 @@
                 <input type="date" class="form-control" id="releaseDate" name="releaseDate" required/>
               </div>
 
-              <!-- Authors Section -->
+
+              <!-- Existing Authors Section -->
               <div class="form-group">
                 <label>Authors</label>
                 <select multiple class="form-control" id="authors" name="authorIds" style="height: 100px;">
@@ -45,17 +52,13 @@
                           th:text="${author.firstName + ' ' + author.lastName}">
                   </option>
                 </select>
-
-                <div id="newAuthorsContainer" class="mt-3">
-                  <!-- New authors will be added here -->
-                </div>
-
+                <div id="newAuthorsContainer" class="mt-3"></div>
                 <button type="button" class="btn btn-primary btn-sm mt-2" onclick="addNewAuthor()">
                   + Add New Author
                 </button>
               </div>
 
-              <!-- Categories Section -->
+              <!-- Existing Categories Section -->
               <div class="form-group">
                 <label>Categories</label>
                 <select multiple class="form-control" id="categories" name="categoryIds" style="height: 100px;">
@@ -64,14 +67,21 @@
                           th:text="${category.name}">
                   </option>
                 </select>
-
-                <div id="newCategoriesContainer" class="mt-3">
-                  <!-- New categories will be added here -->
-                </div>
-
+                <div id="newCategoriesContainer" class="mt-3"></div>
                 <button type="button" class="btn btn-primary btn-sm mt-2" onclick="addNewCategory()">
                   + Add New Category
                 </button>
+              </div>
+
+              <!-- New Inventory Section -->
+              <div class="card mt-4 mb-4">
+                <div class="card-body">
+                  <h5 class="card-title">Inventory Information</h5>
+                  <div class="form-group">
+                    <label for="totalQuantity">Total Quantity</label>
+                    <input type="number" class="form-control" id="totalQuantity" name="totalQuantity" min="0" required/>
+                  </div>
+                </div>
               </div>
 
               <!-- Availability -->

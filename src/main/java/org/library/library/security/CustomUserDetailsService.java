@@ -3,6 +3,7 @@ package org.library.library.security;
 import org.library.library.model.AppUser;
 import org.library.library.repository.AppUserRepository;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -33,8 +34,7 @@ public class CustomUserDetailsService implements UserDetailsService {
                 .map(role -> new SimpleGrantedAuthority("ROLE_" + role.getName()))  // Mapping role to authority
                 .collect(Collectors.toList());
 
-        // Return a Spring Security User object with username, password, and authorities
-        return new org.springframework.security.core.userdetails.User(
+        return new User(
                 user.getUsername(),
                 user.getPassword(),
                 authorities

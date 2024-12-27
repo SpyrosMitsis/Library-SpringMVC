@@ -9,6 +9,9 @@
 <div layout:fragment="content">
     <div class="content-wrapper">
         <div class="row">
+            <div th:if="${param.success}" class="alert alert-success">
+                Author added successfully
+            </div>
             <div class="col-md-12 grid-margin stretch-card">
                 <div class="card">
                     <div class="card-body">

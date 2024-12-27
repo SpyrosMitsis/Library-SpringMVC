@@ -32,7 +32,6 @@ public class SecurityConfig {
                         .requestMatchers(
                                 "/register",
                                 "/login",
-                                "/books/**",
                                 "/author/**",
                                 "/category/**",
                                 "/admin/js/**",
@@ -43,6 +42,8 @@ public class SecurityConfig {
                                 "/"
                         ).permitAll()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/books/loan").authenticated()  // Secure /books/loan
+                        .requestMatchers("/loan/**").authenticated()  // Secure /books/loan
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form

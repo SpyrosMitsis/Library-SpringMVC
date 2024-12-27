@@ -29,6 +29,6 @@ public class CategoryController {
 
         categoryService.save(category);
 
-        return "redirect:/admin/categories/add";
+        return "redirect:/admin/categories/add?success";
     }
 }

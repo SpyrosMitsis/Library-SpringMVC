@@ -2,7 +2,7 @@
   <nav class="sidebar sidebar-offcanvas" id="sidebar">
     <ul class="nav">
       <li class="nav-item">
-        <a class="nav-link" th:href="@{/home/dashboard}">
+        <a class="nav-link" th:href="@{/admin/dashboard}">
           <i class="mdi mdi-grid-large menu-icon"></i>
           <span class="menu-title">Dashboard</span>
         </a>
@@ -12,6 +12,12 @@
         <a class="nav-link" th:href="@{admin/books/add}">
           <i class="menu-icon mdi mdi-book-plus"></i>
           <span class="menu-title">Add Book</span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" th:href="@{admin/books/inventory/add}">
+          <i class="menu-icon mdi mdi-book-check"></i>
+          <span class="menu-title">Add Inventory</span>
         </a>
       </li>
       <li class="nav-item">

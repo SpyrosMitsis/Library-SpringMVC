@@ -3,7 +3,9 @@ package org.library.library.service.impl;
 import org.library.library.dto.BookListDto;
 import org.library.library.model.AppUser;
 import org.library.library.model.Book;
+import org.library.library.model.BookInventory;
 import org.library.library.repository.AppUserRepository;
+import org.library.library.repository.BookInventoryRepository;
 import org.library.library.repository.BookRepository;
 import org.library.library.security.SecurityUtil;
 import org.library.library.service.BookService;
@@ -21,10 +23,12 @@ public class BookServiceImpl implements BookService {
 
     private final BookRepository bookRepository;
     private final AppUserRepository appUserRepository;
+    private final BookInventoryRepository bookInventoryRepository;
 
-    public BookServiceImpl(BookRepository bookRepository, AppUserRepository appUserRepository) {
+    public BookServiceImpl(BookRepository bookRepository, AppUserRepository appUserRepository, BookInventoryRepository bookInventoryRepository) {
         this.bookRepository = bookRepository;
         this.appUserRepository = appUserRepository;
+        this.bookInventoryRepository = bookInventoryRepository;
     }
 
     @Override
@@ -46,6 +50,12 @@ public class BookServiceImpl implements BookService {
         return bookRepository.save(book);
 
     }
+
+    @Override
+    public BookInventory saveInvetory(BookInventory bookInventory) {
+        return bookInventoryRepository.save(bookInventory);
+    }
+
     @Override
     public void update(Book book) {
         String username = SecurityUtil.getCurrentUsername();

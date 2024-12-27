@@ -4,6 +4,7 @@ import org.library.library.dto.BookListDto;
 import org.library.library.mapper.BookMapper;
 import org.library.library.model.Author;
 import org.library.library.model.Book;
+import org.library.library.model.BookInventory;
 import org.library.library.model.Category;
 import org.library.library.service.AuthorService;
 import org.library.library.service.BookService;
@@ -70,54 +71,63 @@ public class BookController {
 
     @PostMapping("admin/books/add")
     public String addBook(@ModelAttribute BookDto bookDTO) {
-
         Book book = BookMapper.mapBookDtoToBook(bookDTO);
 
-        // Add existing authors
+        // Handle authors
         if (bookDTO.getAuthorIds() != null) {
             bookDTO.getAuthorIds().forEach(authorId -> {
-                Author author = authorService.findById(authorId);
-                book.addAuthor(author);
+                book.addAuthor(authorService.findById(authorId));
             });
         }
 
-        // Create and add new authors
         if (bookDTO.getNewAuthors() != null) {
             bookDTO.getNewAuthors().forEach(newAuthorDTO -> {
-                Author author = Author.builder()
+                Author author = authorService.save(Author.builder()
                         .firstName(newAuthorDTO.getFirstName())
                         .lastName(newAuthorDTO.getLastName())
-                        .build();
-
-                author = authorService.save(author);
+                        .build());
                 book.addAuthor(author);
             });
         }
 
-        // Add existing categories
+        // Handle categories
         if (bookDTO.getCategoryIds() != null) {
             bookDTO.getCategoryIds().forEach(categoryId -> {
-                Category category = categoryService.findById(categoryId);
-                book.addCategory(category);
+                book.addCategory(categoryService.findById(categoryId));
             });
         }
 
-        // Create and add new categories
         if (bookDTO.getNewCategories() != null) {
             bookDTO.getNewCategories().forEach(newCategoryDTO -> {
-                Category category = Category.builder()
+                Category category = categoryService.save(Category.builder()
                         .name(newCategoryDTO.getName())
-                        .build();
-                category = categoryService.save(category);
+                        .build());
                 book.addCategory(category);
             });
         }
 
-        bookService.save(book);
-        return "redirect:admin/books/add";
+        // Save book first
+        Book savedBook = bookService.save(book);
+
+        // Then create and save inventory with saved book
+        if (bookDTO.getTotalQuantity() != null) {
+            System.out.println("Inventory data provided.");
+            BookInventory inventory = BookInventory.builder()
+                    .book(savedBook)
+                    .totalQuantity(bookDTO.getTotalQuantity())
+                    .availableQuantity(bookDTO.getTotalQuantity())
+                    .build();
+            bookService.saveInvetory(inventory);
+        } else {
+            System.out.println("No inventory data provided.");
+        }
+
+        return "redirect:/admin/books/add?success";
     }
+
     @GetMapping("/admin/dashboard")
     public String index() {
         return "dashboard";
     }
+
 }
