@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/admin-main}">
+<head>
+    <title>Add Category</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <div class="content-wrapper">
+        <div class="row">
+            <div class="col-md-12 grid-margin stretch-card">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">Add Categoyy</h4>
+                        <form th:action="@{admin/categories/add}" method="post" class="forms-sample">
+                            <!-- Basic Information -->
+                            <div class="form-group">
+                                <label for="name">Category Name</label>
+                                <input type="text" class="form-control" id="name" name="name" placeholder="Category Name" required/>
+                            </div>
+
+                            <!-- Form Buttons -->
+                            <button type="submit" class="btn btn-primary me-2">Submit</button>
+                            <button type="button" class="btn btn-light">Cancel</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<th:block layout:fragment="script">
+    <script th:src="@{/admin/assets/js/add-author.js}"></script>
+    <script th:src="@{/admin/assets/js/add-category.js}"></script>
+</th:block>
+
+</body>
+</html>
+</html>

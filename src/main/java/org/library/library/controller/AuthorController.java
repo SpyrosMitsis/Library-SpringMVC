@@ -1,6 +1,7 @@
 package org.library.library.controller;
 
 import org.library.library.dto.BookListDto;
+import org.library.library.dto.NewAuthorDto;
 import org.library.library.model.Author;
 import org.library.library.model.Book;
 import org.library.library.service.AuthorService;
@@ -8,7 +9,9 @@ import org.library.library.service.BookService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 
 import java.util.List;
 
@@ -35,5 +38,20 @@ public class AuthorController {
         List<BookListDto> books = bookService.findByAuthorId(authorId);
         model.addAttribute("books", books);
         return "author-detail";
+    }
+
+    @GetMapping("admin/authors/add")
+    public String showAddAuthorForm(Model model) {
+        return "add-author";
+    }
+
+    @PostMapping("admin/authors/add")
+    public String addAuthor(@ModelAttribute NewAuthorDto authorDTO) {
+        Author author = Author.builder()
+                .firstName(authorDTO.getFirstName())
+                .lastName(authorDTO.getLastName())
+                .build();
+        author = authorService.save(author);
+        return "redirect:/admin/authors/add";
     }
 }
