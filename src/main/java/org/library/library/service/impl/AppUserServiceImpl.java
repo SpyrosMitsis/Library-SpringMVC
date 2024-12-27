@@ -6,6 +6,7 @@ import org.library.library.model.Role;
 import org.library.library.repository.AppUserRepository;
 import org.library.library.repository.RoleRepository;
 import org.library.library.service.AppUserService;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Set;
@@ -14,10 +15,12 @@ import java.util.Set;
 public class AppUserServiceImpl implements AppUserService {
     private final AppUserRepository appUserRepository;
     private final RoleRepository roleRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public AppUserServiceImpl(AppUserRepository appUserRepository, RoleRepository roleRepository) {
+    public AppUserServiceImpl(AppUserRepository appUserRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder) {
         this.appUserRepository = appUserRepository;
         this.roleRepository = roleRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -26,7 +29,7 @@ public class AppUserServiceImpl implements AppUserService {
         user.setUsername(registrationDto.getUsername());
         user.setFirstName(registrationDto.getFirstName());
         user.setLastName(registrationDto.getLastName());
-        user.setPassword(registrationDto.getPassword());
+        user.setPassword(passwordEncoder.encode(registrationDto.getPassword()));
         Role role = roleRepository.findByName("USER");
         user.setRoles(Set.of(role));
         appUserRepository.save(user);
