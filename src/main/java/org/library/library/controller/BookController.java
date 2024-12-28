@@ -66,7 +66,7 @@ public class BookController {
     public String showAddBookForm(Model model) {
         model.addAttribute("authors", authorService.findAll());
         model.addAttribute("categories", categoryService.findAll());
-        return "add-book";
+        return "admin/add-book";
     }
 
     @PostMapping("admin/books/add")
@@ -127,7 +127,7 @@ public class BookController {
 
     @GetMapping("/admin/dashboard")
     public String index() {
-        return "dashboard";
+        return "admin/dashboard";
     }
 
 }

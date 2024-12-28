@@ -1,15 +1,16 @@
 package org.library.library.controller;
 
-import lombok.RequiredArgsConstructor;
+import jakarta.validation.Valid;
+import org.library.library.dto.QuantityAdjustmentDto;
 import org.library.library.service.InventoryService;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
-@RequestMapping("/inventory")
+@RequestMapping("admin/inventory")
 public class InventoryController {
     private final InventoryService inventoryService;
 
@@ -17,30 +18,30 @@ public class InventoryController {
         this.inventoryService = inventoryService;
     }
 
-    @GetMapping
+    @GetMapping("/list")
     public String listInventory(Model model,
                                 @RequestParam(defaultValue = "0") int page) {
         model.addAttribute("inventories",
                 inventoryService.getInventories(PageRequest.of(page, 10)));
-        return "inventory/list";
+        return "admin/inventory-list";
     }
 
     @GetMapping("/books/{isbn}")
     public String showInventoryDetails(@PathVariable String isbn, Model model) {
         model.addAttribute("inventory", inventoryService.getInventory(isbn));
-        return "inventory/details";
+        return "admin/inventory-details";
     }
 
     @GetMapping("/books/{isbn}/adjust")
     public String showAdjustmentForm(@PathVariable String isbn, Model model) {
-        model.addAttribute("adjustmentDTO", new QuantityAdjustmentDTO());
+        model.addAttribute("adjustmentDTO", new QuantityAdjustmentDto());
         model.addAttribute("inventory", inventoryService.getInventory(isbn));
-        return "inventory/adjust";
+        return "admin/inventory-adjust";
     }
 
     @PostMapping("/books/{isbn}/adjust")
     public String adjustQuantity(@PathVariable String isbn,
-                                 @Valid @ModelAttribute QuantityAdjustmentDTO adjustmentDTO,
+                                 @Valid @ModelAttribute QuantityAdjustmentDto adjustmentDTO,
                                  BindingResult result) {
         if (result.hasErrors()) {
             return "inventory/adjust";

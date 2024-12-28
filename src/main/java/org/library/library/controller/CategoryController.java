@@ -19,7 +19,7 @@ public class CategoryController {
     @GetMapping("/admin/categories/add")
     public String showAddCategoryForm(Model model) {
         model.addAttribute("categories", categoryService.findAll());
-        return "add-category";
+        return "admin/add-category";
     }
     @PostMapping("/admin/categories/add")
     public String addCategory(@ModelAttribute NewCategoryDto categoryDTO) {

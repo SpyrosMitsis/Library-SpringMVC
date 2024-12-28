@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/admin-main}">
+<head>
+    <title>Book Inventory</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <div class="content-wrapper">
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>ISBN</th>
+                    <th>Book Title</th>
+                    <th>Total Quantity</th>
+                    <th>Available Quantity</th>
+                    <th>Availability Progress</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="inventory : ${inventories}">
+                    <td th:text="${inventory.id}"></td>
+                    <td th:text="${inventory.book.isbn}"></td>
+                    <td th:text="${inventory.book.title}"></td>
+                    <td th:text="${inventory.totalQuantity}"></td>
+                    <td th:text="${inventory.availableQuantity}"></td>
+                    <td>
+                        <div class="progress">
+                            <div class="progress-bar bg-success" role="progressbar"
+                                 th:style="'width: ' + ${inventory.availableQuantity * 100 / inventory.totalQuantity} + '%'"
+                                 th:attr="aria-valuenow=${inventory.availableQuantity},aria-valuemax=${inventory.totalQuantity}"
+                                 aria-valuemin="0">
+                                <span th:text="${#numbers.formatDecimal(inventory.availableQuantity * 100 / inventory.totalQuantity, 0, 2)} + '%'"></span>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<th:block layout:fragment="script">
+    <script th:src="@{/admin/assets/js/add-author.js}"></script>
+    <script th:src="@{/admin/assets/js/add-category.js}"></script>
+</th:block>
+
+</body>
+</html>
+</html>

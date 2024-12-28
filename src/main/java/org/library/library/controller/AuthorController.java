@@ -3,7 +3,6 @@ package org.library.library.controller;
 import org.library.library.dto.BookListDto;
 import org.library.library.dto.NewAuthorDto;
 import org.library.library.model.Author;
-import org.library.library.model.Book;
 import org.library.library.service.AuthorService;
 import org.library.library.service.BookService;
 import org.springframework.stereotype.Controller;
@@ -42,7 +41,7 @@ public class AuthorController {
 
     @GetMapping("admin/authors/add")
     public String showAddAuthorForm(Model model) {
-        return "add-author";
+        return "admin/add-author";
     }
 
     @PostMapping("admin/authors/add")
