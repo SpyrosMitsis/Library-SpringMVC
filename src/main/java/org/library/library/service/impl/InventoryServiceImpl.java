@@ -29,8 +29,19 @@ public class InventoryServiceImpl implements InventoryService {
 
     @Override
     public BookInventory adjustQuantity(String isbn, QuantityAdjustmentDto quantityAdjustmentDto) {
-        BookInventory inventory = bookInventoryRepository.findByBookIsbn(isbn).stream().findFirst().orElse(null);
-        return inventory;
+        BookInventory bookInventory = bookInventoryRepository.findByBookIsbn(isbn).stream().findFirst().orElse(null);
+
+        if (quantityAdjustmentDto.getType() == QuantityAdjustmentDto.AdjustmentType.INCREASE) {
+            bookInventory.setTotalQuantity(bookInventory.getTotalQuantity() + quantityAdjustmentDto.getQuantity());
+        } else if (quantityAdjustmentDto.getType() == QuantityAdjustmentDto.AdjustmentType.DECREASE) {
+            bookInventory.setTotalQuantity((bookInventory.getTotalQuantity() - quantityAdjustmentDto.getQuantity()));
+        } else if ( quantityAdjustmentDto.getType() == QuantityAdjustmentDto.AdjustmentType.SET) {
+            bookInventory.setTotalQuantity(quantityAdjustmentDto.getQuantity());
+        }
+        else {
+            throw new IllegalArgumentException("Invalid adjustment type");
+        }
+        return bookInventoryRepository.save(bookInventory);
 
     }
 }

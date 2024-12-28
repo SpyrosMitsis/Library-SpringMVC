@@ -3,12 +3,161 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layout/admin-main}">
 <head>
-    <title>Add Books</title>
+    <title>Dashboard</title>
 </head>
 <body>
 <div layout:fragment="content">
     <div class="content-wrapper">
         <h2>Dashboard</h2>
+        <div class="main-panel">
+                <div class="row">
+                    <div class="col-lg-6 grid-margin stretch-card">
+                        <div class="card">
+                            <div class="card-body">
+                                <h4 class="card-title">Line chart</h4>
+                                <canvas id="lineChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    <table class="table table-striped">
+                        <thead>
+                        <tr>
+                            <th>ISBN</th>
+                            <th>Book Title</th>
+                            <th>Number of Loans</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="loan : ${activeLoans}">
+                            <td th:text="${loan.isbn}"></td>
+                            <td th:text="${loan.title}"></td>
+                            <td th:text="${loan.loanCount}"></td>
+                        </tr>
+                        </tbody>
+                    </table>
+            </div>
+            <script>
+                    document.addEventListener("DOMContentLoaded", function () {
+                    const ctx = document.getElementById('lineChart').getContext('2d');
+
+                    // Fetch data from the API
+                    fetch('/admin/line-chart')
+                    .then(response => response.json())
+                    .then(data => {
+                    // Prepare data for Chart.js
+                    const labels = Object.keys(data);
+                    console.log(labels)
+                    const values = Object.values(data);
+                    console.log(values)
+
+                    // Render Line Chart
+                    new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                    labels: labels,
+                    datasets: [{
+                    label: 'Book Loans',
+                    data: values,
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    tension: 0.1,
+                }]
+                },
+                    options: {
+                    responsive: true,
+                    scales: {
+                    x: {
+                    title: {
+                    display: true,
+                    text: 'Month'
+                }
+                },
+                    y: {
+                    title: {
+                    display: true,
+                    text: 'Number of Loans'
+                }
+                }
+                }
+                }
+                });
+                })
+                    .catch(error => console.error('Error fetching book loan stats:', error));
+                });
+
+            // Bar Chart
+            const barChartCtx = document.getElementById('barChart').getContext('2d');
+            new Chart(barChartCtx, {
+            type: 'bar',
+            data: {
+            labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+            datasets: [{
+            label: '# of Votes',
+            data: [12, 19, 3, 5, 2, 3],
+            backgroundColor: [
+            'rgba(255, 99, 132, 0.2)',
+            'rgba(54, 162, 235, 0.2)',
+            'rgba(255, 206, 86, 0.2)',
+            'rgba(75, 192, 192, 0.2)',
+            'rgba(153, 102, 255, 0.2)',
+            'rgba(255, 159, 64, 0.2)'
+            ],
+            borderColor: [
+            'rgba(255, 99, 132, 1)',
+            'rgba(54, 162, 235, 1)',
+            'rgba(255, 206, 86, 1)',
+            'rgba(75, 192, 192, 1)',
+            'rgba(153, 102, 255, 1)',
+            'rgba(255, 159, 64, 1)'
+            ],
+            borderWidth: 1
+            }]
+            },
+            options: {
+            responsive: true,
+            }
+            });
+
+            // Doughnut Chart
+            const doughnutChartCtx = document.getElementById('doughnutChart').getContext('2d');
+            new Chart(doughnutChartCtx, {
+            type: 'doughnut',
+            data: {
+                        labels: ['Red', 'Blue', 'Yellow'],
+                        datasets: [{
+                            data: [300, 50, 100],
+                            backgroundColor: [
+                                'rgba(255, 99, 132, 0.2)',
+                                'rgba(54, 162, 235, 0.2)',
+                                'rgba(255, 206, 86, 0.2)'
+                            ],
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                    }
+                });
+
+                // Pie Chart
+                const pieChartCtx = document.getElementById('pieChart').getContext('2d');
+                new Chart(pieChartCtx, {
+                    type: 'pie',
+                    data: {
+                        labels: ['Red', 'Blue', 'Yellow'],
+                        datasets: [{
+                            data: [300, 50, 100],
+                            backgroundColor: [
+                                'rgba(255, 99, 132, 0.2)',
+                                'rgba(54, 162, 235, 0.2)',
+                                'rgba(255, 206, 86, 0.2)'
+                            ],
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                    }
+                });
+            </script>
+        </div>
     </div>
 </div>
 </body>

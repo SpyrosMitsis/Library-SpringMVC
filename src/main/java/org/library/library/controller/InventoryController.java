@@ -26,27 +26,24 @@ public class InventoryController {
         return "admin/inventory-list";
     }
 
-    @GetMapping("/{id}")
-    public String showInventoryDetails(@PathVariable String isbn, Model model) {
+    @GetMapping("/{isbn}")
+    public String showInventoryDetailsAndAdjustForm(@PathVariable String isbn, Model model) {
         model.addAttribute("inventory", inventoryService.getInventory(isbn));
+        model.addAttribute("adjustmentDTO", new QuantityAdjustmentDto());
         return "admin/inventory-detail";
     }
 
-    @GetMapping("/books/{isbn}/adjust")
-    public String showAdjustmentForm(@PathVariable String isbn, Model model) {
-        model.addAttribute("adjustmentDTO", new QuantityAdjustmentDto());
-        model.addAttribute("inventory", inventoryService.getInventory(isbn));
-        return "admin/inventory-adjust";
-    }
 
-    @PostMapping("/books/{isbn}/adjust")
+    @PostMapping("/{isbn}/adjust")
     public String adjustQuantity(@PathVariable String isbn,
                                  @Valid @ModelAttribute QuantityAdjustmentDto adjustmentDTO,
-                                 BindingResult result) {
+                                 BindingResult result,
+                                 Model model) {
         if (result.hasErrors()) {
-            return "inventory/adjust";
+            model.addAttribute("inventory", inventoryService.getInventory(isbn));
+            return "admin/inventory-detail?error";
         }
         inventoryService.adjustQuantity(isbn, adjustmentDTO);
-        return "redirect:/inventory";
+        return "redirect:/admin/inventory/" + isbn + "?success=true";
     }
 }

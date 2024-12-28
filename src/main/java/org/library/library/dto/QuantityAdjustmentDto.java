@@ -10,12 +10,10 @@ import lombok.*;
 public class QuantityAdjustmentDto {
     @NotNull(message = "Quantity is required")
     @Min(value = 1, message = "Quantity must be at least 1")
-    private int quantity;
+    private Integer quantity;
 
     @NotNull(message = "Adjustment type is required")
     private AdjustmentType type;
-
-    private String reason;
 
     @Getter
     public enum AdjustmentType {

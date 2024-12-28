@@ -1,5 +1,6 @@
 package org.library.library.service.impl;
 
+import org.library.library.dto.BookLoanSummaryDto;
 import org.library.library.model.*;
 import org.library.library.repository.AppUserRepository;
 import org.library.library.repository.BookInventoryRepository;
@@ -9,12 +10,19 @@ import org.library.library.service.BookLoanService;
 import org.library.library.service.NotificationService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
+import java.util.stream.Collectors;
 
 @Service
 public class BookLoanServiceImpl implements BookLoanService {
@@ -114,6 +122,34 @@ public class BookLoanServiceImpl implements BookLoanService {
         Date date = Date.from(Instant.from(LocalDateTime.now()));
         return bookLoanRepository.findByStatusAndDueDateBefore(LoanStatus.OVERDUE, date, pageRequest).getContent();
     }
+
+    public Map<String, Long> getBookLoansGroupedByMonth() {
+        List<BookLoan> bookLoans = bookLoanRepository.findAll();
+
+        return bookLoans.stream()
+                .filter(loan -> loan.getBorrowedAt() != null)
+                .collect(Collectors.groupingBy(
+                        loan -> {
+                            LocalDate borrowedAt = loan.getBorrowedAt().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+                            return borrowedAt.format(DateTimeFormatter.ofPattern("yyyy-MM"));
+                        },
+                        TreeMap::new,
+                        Collectors.counting()
+                ));
+    }
+
+    @Override
+    public List<BookLoanSummaryDto> getTopNMostLoanedBooks(LoanStatus loanStatus, int n) {
+        Pageable pageable= PageRequest.of(0, n); // n is your dynamic limit
+        LocalDateTime startDateTime = LocalDateTime.of(1970, 1, 1, 0, 0, 0);
+        LocalDateTime endDateTime = LocalDateTime.now();
+        return bookLoanRepository.findMostLoanedBooks(
+                Date.from(startDateTime.atZone(ZoneId.systemDefault()).toInstant()),
+                Date.from(endDateTime.atZone(ZoneId.systemDefault()).toInstant()),
+                pageable
+        );
+    }
+
 
     @Override
     public void updateLoanStatuses() {

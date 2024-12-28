@@ -125,9 +125,5 @@ public class BookController {
         return "redirect:/admin/books/add?success";
     }
 
-    @GetMapping("/admin/dashboard")
-    public String index() {
-        return "admin/dashboard";
-    }
 
 }
