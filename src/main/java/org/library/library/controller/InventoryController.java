@@ -26,10 +26,10 @@ public class InventoryController {
         return "admin/inventory-list";
     }
 
-    @GetMapping("/books/{isbn}")
+    @GetMapping("/{id}")
     public String showInventoryDetails(@PathVariable String isbn, Model model) {
         model.addAttribute("inventory", inventoryService.getInventory(isbn));
-        return "admin/inventory-details";
+        return "admin/inventory-detail";
     }
 
     @GetMapping("/books/{isbn}/adjust")

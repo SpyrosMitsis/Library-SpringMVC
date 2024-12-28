@@ -30,7 +30,7 @@ public class InventoryServiceImpl implements InventoryService {
     @Override
     public BookInventory adjustQuantity(String isbn, QuantityAdjustmentDto quantityAdjustmentDto) {
         BookInventory inventory = bookInventoryRepository.findByBookIsbn(isbn).stream().findFirst().orElse(null);
-        inventory.setAvailableQuantity(inventory.getAvailableQuantity() + quantityAdjustmentDto.getQuantity());
-        return bookInventoryRepository.save(inventory);
+        return inventory;
+
     }
 }
