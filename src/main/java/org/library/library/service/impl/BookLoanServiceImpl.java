@@ -139,10 +139,8 @@ public class BookLoanServiceImpl implements BookLoanService {
     }
 
     @Override
-    public List<BookLoanSummaryDto> getTopNMostLoanedBooks(LoanStatus loanStatus, int n) {
-        Pageable pageable= PageRequest.of(0, n); // n is your dynamic limit
-        LocalDateTime startDateTime = LocalDateTime.of(1970, 1, 1, 0, 0, 0);
-        LocalDateTime endDateTime = LocalDateTime.now();
+    public List<BookLoanSummaryDto> getTopNMostLoanedBooks(LoanStatus loanStatus, int n, LocalDateTime startDateTime, LocalDateTime endDateTime) {
+        Pageable pageable= PageRequest.of(0, n);
         return bookLoanRepository.findMostLoanedBooks(
                 Date.from(startDateTime.atZone(ZoneId.systemDefault()).toInstant()),
                 Date.from(endDateTime.atZone(ZoneId.systemDefault()).toInstant()),
@@ -150,6 +148,18 @@ public class BookLoanServiceImpl implements BookLoanService {
         );
     }
 
+    @Override
+    public List<BookLoanSummaryDto> getTopNMostLoanedBooks(LoanStatus loanStatus, int n) {
+        Pageable pageable= PageRequest.of(0, n);
+        LocalDateTime startDateTime = LocalDateTime.of(1970, 1, 1, 0, 0, 0);
+        LocalDateTime endDateTime = LocalDateTime.now();
+
+        return bookLoanRepository.findMostLoanedBooks(
+                Date.from(startDateTime.atZone(ZoneId.systemDefault()).toInstant()),
+                Date.from(endDateTime.atZone(ZoneId.systemDefault()).toInstant()),
+                pageable
+        );
+    }
 
     @Override
     public void updateLoanStatuses() {
