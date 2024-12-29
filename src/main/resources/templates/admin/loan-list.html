@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/admin-main}">
+<head>
+  <title>Loan List</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
+  <style>
+    .clickable-row {
+      cursor: pointer;
+    }
+    .clickable-row:hover {
+      background-color: #f5f5f5 !important;
+    }
+    .datepicker {
+      font-size: 0.9rem;
+      padding: 0.25rem 0.5rem;
+    }
+    .datepicker-dropdown {
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+<div layout:fragment="content">
+  <div class="content-wrapper">
+    <div class="row mb-3 align-items-center">
+      <div class="col-md-8">
+        <form id="dateFilterForm" th:action="@{/admin/loans/all}" method="get" class="form-inline">
+          <div class="form-group mr-2">
+            <label for="startDate" class="mr-2">Start:</label>
+            <input type="text" id="startDate" name="startDate" class="form-control form-control-sm datepicker" autocomplete="off" th:value="${param.startDate}">
+          </div>
+          <div class="form-group mr-2">
+            <label for="endDate" class="mr-2">End:</label>
+            <input type="text" id="endDate" name="endDate" class="form-control form-control-sm datepicker" autocomplete="off" th:value="${param.endDate}">
+          </div>
+          <button type="submit" class="btn btn-primary btn-sm">Filter</button>
+          <a th:href="@{/admin/loans/all}" class="btn btn-secondary btn-sm ml-2">Reset</a>
+        </form>
+      </div>
+      <div class="col-md-4">
+        <form th:action="@{/admin/loans/all}" method="get" class="form-inline justify-content-end">
+          <input type="hidden" name="page" value="0">
+          <input type="hidden" name="startDate" th:value="${param.startDate}">
+          <input type="hidden" name="endDate" th:value="${param.endDate}">
+          <div class="form-group">
+            <label for="size" class="mr-2">Items per page:</label>
+            <select id="size" name="size" class="form-control form-control-sm" onchange="this.form.submit()">
+              <option value="10" th:selected="${size == 10}">10</option>
+              <option value="20" th:selected="${size == 20}">20</option>
+              <option value="50" th:selected="${size == 50}">50</option>
+            </select>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <table class="table table-striped">
+      <thead>
+      <tr>
+        <th>ID</th>
+        <th>Borrowed At</th>
+        <th>Due Date</th>
+        <th>ISBN</th>
+        <th>Title</th>
+        <th>Borrower</th>
+        <th>Returned At</th>
+        <th>Status</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr th:each="loan : ${loans}">
+        <td th:text="${loan.id}"></td>
+        <td th:text="${#dates.format(loan.borrowedAt, 'yyyy-MM-dd')}"></td>
+        <td th:text="${#dates.format(loan.dueDate, 'yyyy-MM-dd')}"></td>
+        <td th:text="${loan.book.isbn}"></td>
+        <td th:text="${loan.book.title}"></td>
+        <td th:text="${loan.borrower.username}"></td>
+        <td th:text="${loan.returnedAt != null ? #dates.format(loan.returnedAt, 'yyyy-MM-dd') : ''}"></td>
+        <td th:text="${loan.status}"></td>
+      </tr>
+      </tbody>
+    </table>
+
+    <!-- Pagination controls -->
+    <div class="row mt-3">
+      <div class="col-12">
+        <nav aria-label="Page navigation" th:if="${totalPages > 1}">
+          <ul class="pagination justify-content-center">
+            <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+              <a class="page-link" th:href="@{/admin/loans/all(page=${currentPage - 1}, size=${size}, startDate=${param.startDate}, endDate=${param.endDate})}" tabindex="-1">Previous</a>
+            </li>
+            <li class="page-item" th:each="pageNumber : ${#numbers.sequence(0, totalPages - 1)}" th:classappend="${pageNumber == currentPage} ? 'active'">
+              <a class="page-link" th:href="@{/admin/loans/all(page=${pageNumber}, size=${size}, startDate=${param.startDate}, endDate=${param.endDate})}" th:text="${pageNumber + 1}"></a>
+            </li>
+            <li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
+              <a class="page-link" th:href="@{/admin/loans/all(page=${currentPage + 1}, size=${size}, startDate=${param.startDate}, endDate=${param.endDate})}">Next</a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </div>
+  </div>
+</div>
+
+<th:block layout:fragment="script">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
+  <script th:src="@{/admin/assets/js/add-author.js}"></script>
+  <script th:src="@{/admin/assets/js/add-category.js}"></script>
+  <script>
+    $(document).ready(function(){
+      $('.datepicker').datepicker({
+        format: 'yyyy-mm-dd',
+        autoclose: true
+      });
+
+      $('#dateFilterForm').on('submit', function(e) {
+        e.preventDefault();
+
+        // Get the dates
+        let startDate = $('#startDate').val();
+        let endDate = $('#endDate').val();
+
+        // Ensure dates are in correct format (yyyy-MM-dd)
+        if(startDate) {
+          startDate = formatDateForJava(startDate);
+        }
+        if(endDate) {
+          endDate = formatDateForJava(endDate);
+        }
+
+        // Build the URL with properly formatted dates
+        let baseUrl = $(this).attr('action');
+        let url = baseUrl + '?';
+        if(startDate) url += 'startDate=' + startDate + '&';
+        if(endDate) url += 'endDate=' + endDate + '&';
+        url += 'page=0&size=' + $('#size').val();
+
+        // Redirect to the built URL
+        window.location.href = url;
+      });
+
+      // Function to ensure date is in correct format for java.sql.Date
+      function formatDateForJava(dateStr) {
+        if(!dateStr) return '';
+        const date = new Date(dateStr);
+        return date.toISOString().split('T')[0]; // Returns yyyy-MM-dd format
+      }
+
+      // If there are dates in the URL, set them in the datepicker
+      if($('#startDate').val()) {
+        $('#startDate').datepicker('update', new Date($('#startDate').val()));
+      }
+      if($('#endDate').val()) {
+        $('#endDate').datepicker('update', new Date($('#endDate').val()));
+      }
+    });
+  </script>
+</th:block>
+
+</body>
+</html>

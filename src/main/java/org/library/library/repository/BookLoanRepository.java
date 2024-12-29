@@ -38,5 +38,6 @@ public interface BookLoanRepository extends JpaRepository<BookLoan, Long> {
             ORDER BY loanCount DESC
             """)
     List<BookLoanSummaryDto> findMostLoanedBooks(Date startDate, Date endDate, Pageable pageable);
+    Page<BookLoan> findByBorrowedAtBetween(Date startDate, Date endDate, Pageable pageable);
 
 }

@@ -12,6 +12,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.time.Instant;
 import java.time.LocalDate;
@@ -122,7 +123,16 @@ public class BookLoanServiceImpl implements BookLoanService {
         Date date = Date.from(Instant.from(LocalDateTime.now()));
         return bookLoanRepository.findByStatusAndDueDateBefore(LoanStatus.OVERDUE, date, pageRequest).getContent();
     }
-
+    @Override
+    public Page<BookLoan> getAllLoansPaginated(
+            Pageable pageable,
+            @RequestParam("startDate") Date startDate,
+            @RequestParam("endDate") Date endDate
+    ) {
+        String username = SecurityUtil.getCurrentUsername();
+        AppUser user = appUserRepository.findByUsername(username);
+        return bookLoanRepository.findByBorrowedAtBetween(startDate, endDate, pageable);
+    }
     public Map<String, Long> getBookLoansGroupedByMonth() {
         List<BookLoan> bookLoans = bookLoanRepository.findAll();
 
