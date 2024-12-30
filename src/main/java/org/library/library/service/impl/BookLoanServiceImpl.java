@@ -1,6 +1,7 @@
 package org.library.library.service.impl;
 
 import org.library.library.dto.BookLoanSummaryDto;
+import org.library.library.dto.CategoryLoanSummaryDto;
 import org.library.library.model.*;
 import org.library.library.repository.AppUserRepository;
 import org.library.library.repository.BookInventoryRepository;
@@ -183,5 +184,16 @@ public class BookLoanServiceImpl implements BookLoanService {
                 notificationService.sendOverdueNotice(loan);
             }
         }
+    }
+
+    @Override
+    public List<CategoryLoanSummaryDto> findCategoryLoanSummary(Date startDate, Date endDate) {
+        return bookLoanRepository.findCategoryLoanSummary(startDate, endDate);
+    }
+    @Override
+    public List<CategoryLoanSummaryDto> findCategoryLoanSummary() {
+        Date startDate = Date.from(LocalDateTime.of(1970, 1, 1, 0, 0, 0).atZone(ZoneId.systemDefault()).toInstant());
+        Date endDate = Date.from(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant());
+        return bookLoanRepository.findCategoryLoanSummary(startDate, endDate);
     }
 }

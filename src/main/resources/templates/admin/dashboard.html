@@ -19,7 +19,23 @@
                             </div>
                         </div>
                     </div>
-                    <table class="table table-striped">
+                    <div class="col-lg-6 grid-margin stretch-card" style="height: fit-content">
+                        <div class="card">
+                            <div class="card-body">
+                                <h4 class="card-title">User Base</h4>
+                                <p th:text="${totalUsers}" style="font-size: xx-large;
+                                font-weight: bold;
+                                text-align: center">
+
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 grid-margin stretch-card">
+                        <div class="card">
+                            <div class="card-body">
+                                <h4 class="card-title">Most Popular Books</h4>
+                    <table class="table table-striped" >
                         <thead>
                         <tr>
                             <th>ISBN</th>
@@ -35,6 +51,30 @@
                         </tr>
                         </tbody>
                     </table>
+                    </div>
+                    </div>
+                    </div>
+                        <div class="col-lg-6 grid-margin stretch-card" style="height: fit-content">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h4 class="card-title">Most Popular Categories</h4>
+                    <table class="table table-striped">
+                        <thead>
+                        <tr>
+                            <th>Id</th>
+                            <th>Name</th>
+                            <th>Number of Loans</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="category: ${activeCategories}">
+                            <td th:text="${category.categoryId}"></td>
+                            <td th:text="${category.categoryName}"></td>
+                            <td th:text="${category.loanCount}"></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
             <script>
                     document.addEventListener("DOMContentLoaded", function () {
@@ -160,5 +200,7 @@
         </div>
     </div>
 </div>
+    </div>
+
 </body>
 </html>

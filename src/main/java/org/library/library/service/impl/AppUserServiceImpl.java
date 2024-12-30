@@ -40,4 +40,9 @@ public class AppUserServiceImpl implements AppUserService {
     public AppUser findByUsername(String username) {
         return appUserRepository.findByUsername(username);
     }
+
+    @Override
+    public long countAllUsers() {
+        return appUserRepository.count();
+    }
 }

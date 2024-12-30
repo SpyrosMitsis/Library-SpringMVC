@@ -8,4 +8,5 @@ public interface AppUserService {
     void saveUser(RegistrationDto registrationDto);
 
     AppUser findByUsername(String username);
+    long countAllUsers();
 }

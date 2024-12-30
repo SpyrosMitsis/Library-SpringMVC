@@ -1,6 +1,7 @@
 package org.library.library.repository;
 
 import org.library.library.dto.BookLoanSummaryDto;
+import org.library.library.dto.CategoryLoanSummaryDto;
 import org.library.library.model.AppUser;
 import org.library.library.model.BookLoan;
 import org.library.library.model.LoanStatus;
@@ -39,5 +40,22 @@ public interface BookLoanRepository extends JpaRepository<BookLoan, Long> {
             """)
     List<BookLoanSummaryDto> findMostLoanedBooks(Date startDate, Date endDate, Pageable pageable);
     Page<BookLoan> findByBorrowedAtBetween(Date startDate, Date endDate, Pageable pageable);
+
+
+    @Query("""
+    SELECT new org.library.library.dto.CategoryLoanSummaryDto(
+        c.id,
+        c.name,
+        COUNT(bl.id) as loanCount
+    )
+    FROM BookLoan bl
+    JOIN bl.book b
+    JOIN b.categories c
+    WHERE bl.borrowedAt BETWEEN :startDate AND :endDate
+    GROUP BY c.id, c.name
+    ORDER BY loanCount DESC
+    """)
+    List<CategoryLoanSummaryDto> findCategoryLoanSummary(@Param("startDate") Date startDate, @Param("endDate") Date endDate);
+
 
 }

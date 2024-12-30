@@ -1,6 +1,7 @@
 package org.library.library.service;
 
 import org.library.library.dto.BookLoanSummaryDto;
+import org.library.library.dto.CategoryLoanSummaryDto;
 import org.library.library.model.AppUser;
 import org.library.library.model.Book;
 import org.library.library.model.BookLoan;
@@ -37,4 +38,7 @@ public interface BookLoanService {
 
     void updateLoanStatuses();
 
+    List<CategoryLoanSummaryDto> findCategoryLoanSummary(Date startDate, Date endDate);
+
+    List<CategoryLoanSummaryDto> findCategoryLoanSummary();
 }

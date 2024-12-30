@@ -1,8 +1,11 @@
 package org.library.library.controller;
 
 import org.library.library.dto.BookLoanSummaryDto;
+import org.library.library.dto.CategoryLoanSummaryDto;
 import org.library.library.model.BookLoan;
 import org.library.library.model.LoanStatus;
+import org.library.library.repository.AppUserRepository;
+import org.library.library.service.AppUserService;
 import org.library.library.service.BookLoanService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -23,16 +26,22 @@ import java.util.Map;
 @RequestMapping("/admin")
 public class DashboardController {
     private final BookLoanService loanService;
+    private final AppUserService appUserService;
 
 
-    public DashboardController(BookLoanService loanService) {
+    public DashboardController(BookLoanService loanService, AppUserRepository appUserRepository, AppUserService appUserService) {
         this.loanService = loanService;
+        this.appUserService = appUserService;
     }
 
     @GetMapping("/dashboard")
     public String index(Model model) {
         List<BookLoanSummaryDto> activeLoans = loanService.getTopNMostLoanedBooks(LoanStatus.ACTIVE, 10);
+        List<CategoryLoanSummaryDto> activeCategories = loanService.findCategoryLoanSummary();
+        long totalUsers = appUserService.countAllUsers();
         model.addAttribute("activeLoans", activeLoans);
+        model.addAttribute("activeCategories", activeCategories);
+        model.addAttribute("totalUsers", totalUsers);
 
         return "admin/dashboard";
     }
