@@ -25,29 +25,25 @@
                 </li>
             </ul>
             <ul class="navbar-nav ms-auto">
+
                 <li class="nav-item dropdown">
                     <a class="nav-link count-indicator" id="notificationDropdown" href="#" data-bs-toggle="dropdown">
-                        <i class="icon-bell" ></i>
-                        <span class="count-indicator" th:if="${not #lists.isEmpty(notifications)}" th:text="${#lists.size(notifications)}"></span>
+                        <i class="icon-bell"></i>
+                        <span class="count-indicator" id="notification-count"></span>
                     </a>
                     <div class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list pb-0" aria-labelledby="notificationDropdown">
                         <a class="dropdown-item py-3 border-bottom">
-                            <p class="mb-0 fw-medium float-start" th:text="'You have ' + ${#lists.size(notifications)} + ' new notifications'"></p>
+                            <p class="mb-0 fw-medium float-start" id="notification-header"></p>
                             <span class="badge badge-pill badge-primary float-end">View all</span>
                         </a>
-                        <div th:each="notification : ${notifications}">
-                            <a class="dropdown-item preview-item py-3" th:class="${notification.message.startsWith('OVERDUE:') ? 'dropdown-item preview-item py-3 overdue' : 'dropdown-item preview-item py-3 warning'}">
-                                <div class="preview-thumbnail">
-                                    <i class="mdi mdi-alert m-auto text-primary"></i>
-                                </div>
-                                <div class="preview-item-content">
-                                    <h6 class="preview-subject fw-normal text-dark mb-1" th:text="${notification.message}"></h6>
-                                    <p class="fw-light small-text mb-0" th:text="${#dates.format(notification.createdAt, 'dd-MM-yyyy HH:mm')}"></p>
-                                </div>
-                            </a>
+                        <div id="notification-list">
+                            <!-- Notifications will be appended here -->
                         </div>
                     </div>
                 </li>
+
+
+
                 <li class="nav-item dropdown d-none d-lg-block user-dropdown">
                     <a class="nav-link" id="UserDropdown" href="#" data-bs-toggle="dropdown" aria-expanded="false">
                         <img class="img-xs rounded-circle" src="admin/assets/images/faces/face8.jpg" alt="Profile image"> </a>

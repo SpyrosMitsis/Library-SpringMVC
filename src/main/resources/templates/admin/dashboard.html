@@ -86,9 +86,7 @@
                     .then(data => {
                     // Prepare data for Chart.js
                     const labels = Object.keys(data);
-                    console.log(labels)
                     const values = Object.values(data);
-                    console.log(values)
 
                     // Render Line Chart
                     new Chart(ctx, {

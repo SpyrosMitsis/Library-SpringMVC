@@ -8,6 +8,7 @@ import java.util.List;
 
 public interface NotificationService {
     void createNotification(AppUser user, String message);
-    List<Notification> getUnreadNotifications(AppUser user);
-
+    void updateOverdueLoans();
+    void checkLoanDueDates();
+    List<Notification> getUnreadNotifications();
 }

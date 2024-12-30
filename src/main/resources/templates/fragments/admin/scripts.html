@@ -10,4 +10,55 @@
   <script th:src="@{/admin/assets/js/todolist.js}"></script>
   <script th:src="@{/admin/assets/js/jquery.cookie.js}"></script>
   <script th:src="@{/admin/assets/js/dashboard.js}"></script>
+
+
+
+  <script>
+    function fetchNotifications() {
+      const notificationList = document.getElementById('notification-list');
+      const notificationCount = document.getElementById('notification-count');
+      const notificationHeader = document.getElementById('notification-header');
+
+      // Clear the existing notifications
+      notificationList.innerHTML = '';
+      notificationCount.innerHTML = '';
+
+      fetch('/send-due-date-reminder')
+              .then(response => response.json())
+              .then(data => {
+                if (data.length > 0) {
+                  notificationCount.textContent = data.length;
+                  notificationHeader.textContent = `You have ${data.length} new notifications`;
+                  data.forEach(notification => {
+                    console.log(notification);
+                    const notificationClass = notification.message.startsWith('OVERDUE:') ? 'overdue' : 'warning';
+                    const notificationHtml = `
+                            <a class="dropdown-item preview-item py-3 ${notificationClass}">
+                                <div class="preview-thumbnail">
+                                    <i class="mdi mdi-alert m-auto text-primary"></i>
+                                </div>
+                                <div class="preview-item-content">
+                                    <h6 class="preview-subject fw-normal text-dark mb-1">${notification.message}</h6>
+                                    <p class="fw-light small-text mb-0">${new Date(notification.createdAt).toLocaleString()}</p>
+                                </div>
+                            </a>
+                        `;
+                    notificationList.insertAdjacentHTML('beforeend', notificationHtml);
+                  });
+                } else {
+                  notificationHeader.textContent = 'No new notifications';
+                }
+              })
+              .catch(error => {
+                console.error('Error fetching notifications:', error);
+                notificationHeader.textContent = 'Error loading notifications';
+              });
+    }
+
+    document.getElementById('notificationDropdown').addEventListener('click', fetchNotifications);
+
+    fetchNotifications();
+
+  </script>
+
 </div>

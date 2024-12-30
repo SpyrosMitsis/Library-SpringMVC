@@ -31,13 +31,11 @@ public class BookLoanServiceImpl implements BookLoanService {
 
     private final BookLoanRepository bookLoanRepository;
     private final BookInventoryRepository bookInventoryRepository;
-    private final NotificationService notificationService;
     private final AppUserRepository appUserRepository;
 
     public BookLoanServiceImpl(BookLoanRepository bookLoanRepository, BookInventoryRepository bookInventoryRepository, NotificationService notificationService, AppUserRepository appUserRepository) {
         this.bookLoanRepository = bookLoanRepository;
         this.bookInventoryRepository = bookInventoryRepository;
-        this.notificationService = notificationService;
         this.appUserRepository = appUserRepository;
     }
 
@@ -181,4 +179,6 @@ public class BookLoanServiceImpl implements BookLoanService {
         Date endDate = Date.from(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant());
         return bookLoanRepository.findCategoryLoanSummary(startDate, endDate);
     }
+
 }
+

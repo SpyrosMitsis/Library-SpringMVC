@@ -1,21 +1,24 @@
 package org.library.library.controller;
 
+import org.library.library.model.Notification;
 import org.library.library.scheduler.NotificationScheduler;
 import org.library.library.service.NotificationService;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @RestController
 public class NotificationController {
-    private final NotificationScheduler notificationService;
+    private final NotificationService notificationService;
 
-    public NotificationController(NotificationScheduler notificationService1) {
-        this.notificationService = notificationService1;
+    public NotificationController(NotificationService notificationService) {
+        this.notificationService = notificationService;
     }
 
     @GetMapping("/send-due-date-reminder")
-    public void sendDueDateReminder() {
-        notificationService.checkLoanDueDates();
+    public List<Notification> sendDueDateReminder() {
+        return notificationService.getUnreadNotifications();
+
     }
 }

@@ -1,5 +1,7 @@
 package org.library.library.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -19,6 +21,7 @@ import java.util.Set;
 public class AppUser {
     @Id
     private String username;
+    @JsonIgnore
     private String password;
     private String firstName;
     private String lastName;
@@ -29,6 +32,7 @@ public class AppUser {
             joinColumns = @JoinColumn(name = "username"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
 
+    @JsonBackReference
     private Set<Role> roles = new HashSet<>();
     @OneToMany(mappedBy = "user")
     private Set<Rating> ratings = new HashSet<>();

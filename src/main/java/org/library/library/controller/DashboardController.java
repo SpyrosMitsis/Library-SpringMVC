@@ -44,13 +44,10 @@ public class DashboardController {
         List<BookLoanSummaryDto> activeLoans = loanService.getTopNMostLoanedBooks(LoanStatus.ACTIVE, 10);
         List<CategoryLoanSummaryDto> activeCategories = loanService.findCategoryLoanSummary();
 
-        List<Notification> notifications = notificationService.getUnreadNotifications(appUserService.getAuthenticatedUser());
-
         long totalUsers = appUserService.countAllUsers();
         model.addAttribute("activeLoans", activeLoans);
         model.addAttribute("activeCategories", activeCategories);
         model.addAttribute("totalUsers", totalUsers);
-        model.addAttribute("notifications", notifications);
 
         return "admin/dashboard";
     }
