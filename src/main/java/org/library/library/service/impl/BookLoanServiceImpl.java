@@ -44,8 +44,7 @@ public class BookLoanServiceImpl implements BookLoanService {
     @Override
     public BookLoan borrowBook(String isbn) {
 
-        String username = SecurityUtil.getCurrentUsername();
-        AppUser borrower = appUserRepository.findByUsername(username);
+        AppUser borrower = appUserRepository.findByUsername(SecurityUtil.getCurrentUsername());
         BookInventory inventory = bookInventoryRepository.findByBookIsbn(isbn)
                 .stream()
                 .findFirst()
@@ -170,20 +169,6 @@ public class BookLoanServiceImpl implements BookLoanService {
                 Date.from(endDateTime.atZone(ZoneId.systemDefault()).toInstant()),
                 pageable
         );
-    }
-
-    @Override
-    public void updateLoanStatuses() {
-        Date now = Date.from(Instant.from(LocalDateTime.now()));
-        List<BookLoan> activeLoans = bookLoanRepository.findByStatus(LoanStatus.ACTIVE);
-
-        for (BookLoan loan : activeLoans) {
-            if (loan.getDueDate().before(now) && loan.getStatus() != LoanStatus.OVERDUE) {
-                loan.setStatus(LoanStatus.OVERDUE);
-                bookLoanRepository.save(loan);
-                notificationService.sendOverdueNotice(loan);
-            }
-        }
     }
 
     @Override

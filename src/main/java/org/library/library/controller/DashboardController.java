@@ -4,9 +4,11 @@ import org.library.library.dto.BookLoanSummaryDto;
 import org.library.library.dto.CategoryLoanSummaryDto;
 import org.library.library.model.BookLoan;
 import org.library.library.model.LoanStatus;
+import org.library.library.model.Notification;
 import org.library.library.repository.AppUserRepository;
 import org.library.library.service.AppUserService;
 import org.library.library.service.BookLoanService;
+import org.library.library.service.NotificationService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -25,23 +27,30 @@ import java.util.Map;
 @Controller
 @RequestMapping("/admin")
 public class DashboardController {
+
     private final BookLoanService loanService;
     private final AppUserService appUserService;
+    private  final NotificationService notificationService;
 
 
-    public DashboardController(BookLoanService loanService, AppUserRepository appUserRepository, AppUserService appUserService) {
+    public DashboardController(BookLoanService loanService, AppUserRepository appUserRepository, AppUserService appUserService, NotificationService notificationService) {
         this.loanService = loanService;
         this.appUserService = appUserService;
+        this.notificationService = notificationService;
     }
 
     @GetMapping("/dashboard")
     public String index(Model model) {
         List<BookLoanSummaryDto> activeLoans = loanService.getTopNMostLoanedBooks(LoanStatus.ACTIVE, 10);
         List<CategoryLoanSummaryDto> activeCategories = loanService.findCategoryLoanSummary();
+
+        List<Notification> notifications = notificationService.getUnreadNotifications(appUserService.getAuthenticatedUser());
+
         long totalUsers = appUserService.countAllUsers();
         model.addAttribute("activeLoans", activeLoans);
         model.addAttribute("activeCategories", activeCategories);
         model.addAttribute("totalUsers", totalUsers);
+        model.addAttribute("notifications", notifications);
 
         return "admin/dashboard";
     }

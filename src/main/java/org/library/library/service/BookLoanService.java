@@ -36,9 +36,6 @@ public interface BookLoanService {
     List<BookLoanSummaryDto> getTopNMostLoanedBooks(LoanStatus loanStatus, int n, LocalDateTime startDateTime, LocalDateTime endDateTime);
     List<BookLoanSummaryDto> getTopNMostLoanedBooks(LoanStatus loanStatus, int n);
 
-    void updateLoanStatuses();
-
     List<CategoryLoanSummaryDto> findCategoryLoanSummary(Date startDate, Date endDate);
-
     List<CategoryLoanSummaryDto> findCategoryLoanSummary();
 }

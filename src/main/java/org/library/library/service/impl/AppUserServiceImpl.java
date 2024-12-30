@@ -5,6 +5,7 @@ import org.library.library.model.AppUser;
 import org.library.library.model.Role;
 import org.library.library.repository.AppUserRepository;
 import org.library.library.repository.RoleRepository;
+import org.library.library.security.SecurityUtil;
 import org.library.library.service.AppUserService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -34,6 +35,11 @@ public class AppUserServiceImpl implements AppUserService {
         user.setRoles(Set.of(role));
         appUserRepository.save(user);
 
+    }
+
+    @Override
+    public AppUser getAuthenticatedUser() {
+        return appUserRepository.findByUsername(SecurityUtil.getCurrentUsername());
     }
 
     @Override

@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 public interface AppUserService {
     void saveUser(RegistrationDto registrationDto);
 
+    AppUser getAuthenticatedUser();
     AppUser findByUsername(String username);
     long countAllUsers();
 }
