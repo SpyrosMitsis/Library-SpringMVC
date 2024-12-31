@@ -16,5 +16,6 @@ public interface BookService {
     void delete(Book book);
     Book addBook(Book book);
     List<BookListDto> findByAuthorId(Long authorId);
-    Page<Book> findPaginated(PageRequest pageRequest);
+    Page<Book> findAllPaginated(PageRequest pageRequest);
+    Page<Book> findByCategoryIdPaginated(Long categoryId, PageRequest pageRequest);
 }

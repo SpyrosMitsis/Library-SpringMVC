@@ -1,0 +1,36 @@
+.category-block {
+    height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 15px;
+    background: linear-gradient(45deg, #3498db, #2980b9);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    margin: 10px;
+}
+
+.category-block:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+}
+
+.category-name {
+    color: white;
+    font-size: 24px;
+    font-weight: bold;
+    text-align: center;
+    text-transform: uppercase;
+    padding: 20px;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+}
+
+/* Different gradient colors for variety */
+.category-block:nth-child(3n+1) {
+    background: linear-gradient(45deg, #88ac4b, #7fad39);
+}
+.category-block:nth-child(3n+2) {
+    background: linear-gradient(45deg, #e74c3c, #c0392b);
+}
+.category-block:nth-child(3n+3) {
+    background: linear-gradient(45deg, #3498db, #2980b9);
+}

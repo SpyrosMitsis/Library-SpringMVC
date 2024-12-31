@@ -1,6 +1,5 @@
 package org.library.library.controller;
 import org.library.library.dto.BookDto;
-import org.library.library.dto.BookListDto;
 import org.library.library.dto.BookLoanDto;
 import org.library.library.mapper.BookMapper;
 import org.library.library.model.*;
@@ -13,7 +12,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 
 @Controller
 public class BookController {
@@ -34,21 +32,14 @@ public class BookController {
     }
 
 
-    @GetMapping("/home")
-    public String getAllBooks(Model model) {
-        List<BookListDto> books = bookService.findAll();
-        model.addAttribute("books", books);
-        return "library/index";
-    }
 
     @GetMapping("/books")
     public String listBooks(@RequestParam(defaultValue = "1") int page,
                             @RequestParam(defaultValue = "9") int size,
+                            @RequestParam(required = false) Long categoryId,
                             Model model) {
         PageRequest pageRequest = PageRequest.of(page - 1, size);
-        Page<Book> bookPage = bookService.findPaginated(pageRequest);
-
-        model.addAttribute("books", bookPage.getContent());
+        Page<Book> bookPage = bookService.findAllPaginated(pageRequest);
         model.addAttribute("currentPage", page);
         model.addAttribute("size", size);
         model.addAttribute("totalPages", bookPage.getTotalPages());
@@ -132,5 +123,12 @@ public class BookController {
         return "redirect:/admin/books/add?success";
     }
 
+    @GetMapping("books/category")
+    public String searchByCategory(@PathVariable Long categoryId,
+                                   @RequestParam(defaultValue = "1") int page,
+                                   @RequestParam(defaultValue = "9") int size,
+                                   Model model) {
+        return "library/book-list";
+    }
 
 }

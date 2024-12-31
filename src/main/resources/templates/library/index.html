@@ -2,14 +2,39 @@
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layout/library-main}">
-<head>
-    <title>Add Books</title>
-</head>
+
 <body>
 <div layout:fragment="content">
     <div class="content-wrapper">
-        <h2>Library main</h2>
+        <div class="col-lg-9 offset-lg-3">
+            <div class="hero__search">
+                <div class="hero__search__form">
+                    <form action="#">
+                        <input type="text" placeholder="Search Book by Title">
+                        <button type="submit" class="site-btn">SEARCH</button>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
+
+    <section class="categories">
+        <div class="container">
+            <div class="row">
+                <div class="categories__slider owl-carousel">
+                    <!-- Modified structure to use your custom styles -->
+                    <div class="col-lg-3" th:each="category : ${categories}">
+                        <a th:href="@{'/books/categories/' + ${category.categoryId}}"
+                           class="category-block">
+                            <div class="category-name" th:text="${category.categoryName}">
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 </div>
+
 </body>
 </html>

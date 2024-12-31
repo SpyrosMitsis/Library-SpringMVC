@@ -2,8 +2,13 @@
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 
-<head th:replace="~{fragments/library/head:: head}">
+<head th:replace="~{fragments/library/head:: head(customStyles=~{::custom-styles})}">
+  <th:block th:fragment="custom-styles">
+    <!-- This will be replaced by page-specific styles -->
+  </th:block>
   <title th:text="${CONTENT_TITLE} + ' - ' + ${LAYOUT_TITLE}">Library Admin</title>
+</head>
+</head>
 <body class="with-welcome-text">
 <div class="container-scroller">
   <div th:replace="~{fragments/library/header:: header}"></div>

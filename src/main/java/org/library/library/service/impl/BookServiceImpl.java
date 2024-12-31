@@ -83,8 +83,16 @@ public class BookServiceImpl implements BookService {
         return books.stream().map((book) -> mapToBookListDto(book)).collect(Collectors.toList());
     }
     @Override
-    public Page<Book> findPaginated(PageRequest pageRequest) {
-        return bookRepository.findAll(pageRequest);
+    public Page<Book> findAllPaginated(PageRequest pageRequest) {
+        Page<BookInventory> bookPage = bookInventoryRepository.findAllBooksPaginated(pageRequest);
+
+
+
+    }
+
+    @Override
+    public Page<Book> findByCategoryIdPaginated(Long categoryId, PageRequest pageRequest) {
+        return bookRepository.findByCategoriesId(categoryId, pageRequest);
     }
 
 }
