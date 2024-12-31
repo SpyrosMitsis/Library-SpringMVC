@@ -3,7 +3,6 @@ import org.library.library.dto.BookDto;
 import org.library.library.dto.BookLoanDto;
 import org.library.library.mapper.BookMapper;
 import org.library.library.model.*;
-import org.library.library.repository.BookLoanRepository;
 import org.library.library.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -37,9 +36,21 @@ public class BookController {
     public String listBooks(@RequestParam(defaultValue = "1") int page,
                             @RequestParam(defaultValue = "9") int size,
                             @RequestParam(required = false) Long categoryId,
+                            @RequestParam(required = false) String query,
                             Model model) {
         PageRequest pageRequest = PageRequest.of(page - 1, size);
         Page<Book> bookPage = bookService.findAllPaginated(pageRequest);
+
+        if (categoryId != null) {
+            bookPage = bookService.findByCategoryIdPaginated(categoryId, pageRequest);
+            Category category = categoryService.findById(categoryId);
+            model.addAttribute("category", category);
+        }
+        if (query != null) {
+            bookPage = bookService.findByTitleContainingPaginated(query, pageRequest);
+        }
+
+        model.addAttribute("books", bookPage);
         model.addAttribute("currentPage", page);
         model.addAttribute("size", size);
         model.addAttribute("totalPages", bookPage.getTotalPages());
@@ -123,12 +134,5 @@ public class BookController {
         return "redirect:/admin/books/add?success";
     }
 
-    @GetMapping("books/category")
-    public String searchByCategory(@PathVariable Long categoryId,
-                                   @RequestParam(defaultValue = "1") int page,
-                                   @RequestParam(defaultValue = "9") int size,
-                                   Model model) {
-        return "library/book-list";
-    }
 
 }

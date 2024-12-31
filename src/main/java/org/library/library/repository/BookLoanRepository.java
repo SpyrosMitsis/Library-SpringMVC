@@ -61,7 +61,7 @@ public interface BookLoanRepository extends JpaRepository<BookLoan, Long> {
     BookLoan findByBookAndBorrowerAndStatus(Book book, AppUser appUser, LoanStatus loanStatus);
 
     @Query("SELECT bl FROM BookLoan bl WHERE LOWER(bl.book.title) LIKE LOWER(CONCAT(:prefix, '%'))")
-    Page<BookLoan> findByBookTitleStartingWith(@Param("prefix") String prefix, PageRequest pageRequest);
+    Page<BookLoan> findByBookTitleContaining(@Param("prefix") String prefix, PageRequest pageRequest);
 
 
 }

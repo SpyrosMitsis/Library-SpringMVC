@@ -1,16 +1,20 @@
 package org.library.library.service.impl;
 
 import org.library.library.dto.BookListDto;
+import org.library.library.dto.BookLoanSummaryDto;
 import org.library.library.model.AppUser;
 import org.library.library.model.Book;
 import org.library.library.model.BookInventory;
+import org.library.library.model.LoanStatus;
 import org.library.library.repository.AppUserRepository;
 import org.library.library.repository.BookInventoryRepository;
 import org.library.library.repository.BookRepository;
 import org.library.library.security.SecurityUtil;
+import org.library.library.service.BookLoanService;
 import org.library.library.service.BookService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -24,11 +28,13 @@ public class BookServiceImpl implements BookService {
     private final BookRepository bookRepository;
     private final AppUserRepository appUserRepository;
     private final BookInventoryRepository bookInventoryRepository;
+    private final BookLoanService bookLoanService;
 
-    public BookServiceImpl(BookRepository bookRepository, AppUserRepository appUserRepository, BookInventoryRepository bookInventoryRepository) {
+    public BookServiceImpl(BookRepository bookRepository, AppUserRepository appUserRepository, BookInventoryRepository bookInventoryRepository, BookLoanService bookLoanService) {
         this.bookRepository = bookRepository;
         this.appUserRepository = appUserRepository;
         this.bookInventoryRepository = bookInventoryRepository;
+        this.bookLoanService = bookLoanService;
     }
 
     @Override
@@ -84,15 +90,30 @@ public class BookServiceImpl implements BookService {
     }
     @Override
     public Page<Book> findAllPaginated(PageRequest pageRequest) {
-        Page<BookInventory> bookPage = bookInventoryRepository.findAllBooksPaginated(pageRequest);
-
-
+        Page<BookInventory> bookPage = bookInventoryRepository.findAll(pageRequest);
+        return bookPage.map(BookInventory::getBook);
 
     }
 
     @Override
     public Page<Book> findByCategoryIdPaginated(Long categoryId, PageRequest pageRequest) {
-        return bookRepository.findByCategoriesId(categoryId, pageRequest);
+        Page<BookInventory> bookPage = bookInventoryRepository.findByBookCategoriesId(categoryId, pageRequest);
+        return bookPage.map(BookInventory::getBook);
     }
 
+    @Override
+    public Page<Book> findByTitleContainingPaginated(String title, PageRequest pageRequest) {
+        Page<BookInventory> bookPage = bookInventoryRepository.findByBookTitleContaining(title, pageRequest);
+        return bookPage.map(BookInventory::getBook);
+    }
+
+    @Override
+    public List<BookListDto> getTopNMostLoanedBooks() {
+        List<BookLoanSummaryDto> activeLoans = bookLoanService.getTopNMostLoanedBooks(LoanStatus.ACTIVE, 10);
+        List<BookListDto> books = activeLoans.stream()
+                .map(loan -> mapToBookListDto(findByIsbn(loan.getIsbn())))
+                .collect(Collectors.toList());
+
+        return books;
+    }
 }

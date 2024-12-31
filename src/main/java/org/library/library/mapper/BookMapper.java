@@ -3,7 +3,9 @@ package org.library.library.mapper;
 import org.library.library.dto.BookDto;
 import org.library.library.dto.BookListDto;
 import org.library.library.model.Book;
+import org.springframework.stereotype.Component;
 
+@Component
 public class BookMapper {
     public static BookListDto mapToBookListDto(Book book) {
         return BookListDto.builder()

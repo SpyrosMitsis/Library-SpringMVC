@@ -214,7 +214,7 @@ public class BookLoanServiceImpl implements BookLoanService {
     @Override
     public Page<BookLoan> findBooksByBookStartingWithTitlePaginated(String title, PageRequest pageRequest) {
 
-        return bookLoanRepository.findByBookTitleStartingWith(title, pageRequest);
+        return bookLoanRepository.findByBookTitleContaining(title, pageRequest);
     }
 }
 

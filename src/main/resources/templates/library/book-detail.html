@@ -91,7 +91,10 @@
                                     <h6>Additional Information</h6>
                                     <ul>
                                         <li><b>Publisher:</b> <span>Publisher Name</span></li>
-                                        <li><b>Genre:</b> <span >Book Genres</span></li>
+                                        <li><b>Genre:</b> <span th:each="category, iterStat : ${book.categories}">
+                                            <a th:href="@{/books(categoryId=${category.id})}" th:text="${category.name}"> </a>
+                                            <span th:if="${!iterStat.last}">, </span>
+                                        </span>
                                     </ul>
                                 </div>
                             </div>

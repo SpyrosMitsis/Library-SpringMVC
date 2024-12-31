@@ -34,15 +34,11 @@ public interface BookLoanService {
             @RequestParam("startDate") Date startDate,
             @RequestParam("endDate") Date endDate
     );
-
     Map<String, Long> getBookLoansGroupedByMonth();
     List<BookLoanSummaryDto> getTopNMostLoanedBooks(LoanStatus loanStatus, int n, LocalDateTime startDateTime, LocalDateTime endDateTime);
     List<BookLoanSummaryDto> getTopNMostLoanedBooks(LoanStatus loanStatus, int n);
-
     List<CategoryLoanSummaryDto> findCategoryLoanSummary(Date startDate, Date endDate);
     List<CategoryLoanSummaryDto> findCategoryLoanSummary();
-
     BookLoanDto getBookLoanByBookAndBorrower(Book book, AppUser borrower);
-
     Page<BookLoan> findBooksByBookStartingWithTitlePaginated(String title, PageRequest pageRequest);
 }
