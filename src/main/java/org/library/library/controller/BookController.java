@@ -1,14 +1,11 @@
 package org.library.library.controller;
 import org.library.library.dto.BookDto;
 import org.library.library.dto.BookListDto;
+import org.library.library.dto.BookLoanDto;
 import org.library.library.mapper.BookMapper;
-import org.library.library.model.Author;
-import org.library.library.model.Book;
-import org.library.library.model.BookInventory;
-import org.library.library.model.Category;
-import org.library.library.service.AuthorService;
-import org.library.library.service.BookService;
-import org.library.library.service.CategoryService;
+import org.library.library.model.*;
+import org.library.library.repository.BookLoanRepository;
+import org.library.library.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -23,13 +20,17 @@ public class BookController {
     private final BookService bookService;
     private final AuthorService authorService;
     private final CategoryService categoryService;
+    private final BookLoanService bookLoanService;
+    private final AppUserService appUserService;
 
 
     @Autowired
-    public BookController(BookService bookService, AuthorService authorService, CategoryService categoryService) {
+    public BookController(BookService bookService, AuthorService authorService, CategoryService categoryService, BookLoanService bookLoanService, AppUserService appUserService) {
         this.bookService = bookService;
         this.authorService = authorService;
         this.categoryService = categoryService;
+        this.bookLoanService = bookLoanService;
+        this.appUserService = appUserService;
     }
 
 
@@ -37,7 +38,7 @@ public class BookController {
     public String getAllBooks(Model model) {
         List<BookListDto> books = bookService.findAll();
         model.addAttribute("books", books);
-        return "index";
+        return "library/index";
     }
 
     @GetMapping("/books")
@@ -53,14 +54,20 @@ public class BookController {
         model.addAttribute("totalPages", bookPage.getTotalPages());
         model.addAttribute("totalItems", bookPage.getTotalElements());
 
-        return "book-list";
+        return "library/book-list";
     }
 
     @GetMapping("/books/{bookId}")
     public String getAllBooks(@PathVariable String bookId, Model model) {
         Book book = bookService.findByIsbn(bookId);
+        BookLoanDto bookLoan = bookLoanService.getBookLoanByBookAndBorrower(book, appUserService.getAuthenticatedUser());
+
+        System.out.println("-------------------");
+        System.out.println(bookLoan);
+        System.out.println("-------------------");
         model.addAttribute("book", book);
-        return "book-detail";
+        model.addAttribute("bookLoan", bookLoan);
+        return "library/book-detail";
     }
     @GetMapping("admin/books/add")
     public String showAddBookForm(Model model) {

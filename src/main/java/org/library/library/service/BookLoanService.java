@@ -1,5 +1,6 @@
 package org.library.library.service;
 
+import org.library.library.dto.BookLoanDto;
 import org.library.library.dto.BookLoanSummaryDto;
 import org.library.library.dto.CategoryLoanSummaryDto;
 import org.library.library.model.AppUser;
@@ -23,9 +24,11 @@ public interface BookLoanService {
     boolean hasOverdueBooks(AppUser borrower);
     BookLoan returnBook(Long loanId);
     List<BookLoan> getActiveLoans();
-    Page<BookLoan> getActiveLoansPaginated(PageRequest pageRequest);
+    Page<BookLoan> getPersonalLoansByStatusPaginated(String status, PageRequest pageRequest);
+    List<BookLoan> getPersonalLoansByStatus(String status);
 
-    List<BookLoan> getOverdueBookLoansPaginated(PageRequest pageRequest);
+    Page<BookLoan> getAllPersonalLoansPaginated(PageRequest pageRequest);
+
     Page<BookLoan> getAllLoansPaginated(
             Pageable pageable,
             @RequestParam("startDate") Date startDate,
@@ -38,4 +41,8 @@ public interface BookLoanService {
 
     List<CategoryLoanSummaryDto> findCategoryLoanSummary(Date startDate, Date endDate);
     List<CategoryLoanSummaryDto> findCategoryLoanSummary();
+
+    BookLoanDto getBookLoanByBookAndBorrower(Book book, AppUser borrower);
+
+    Page<BookLoan> findBooksByBookStartingWithTitlePaginated(String title, PageRequest pageRequest);
 }

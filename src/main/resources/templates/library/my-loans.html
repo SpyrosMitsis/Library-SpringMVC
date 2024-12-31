@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/library-main}">
+
+<head>
+    <title>My Loans</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <section class="product spad">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-3 col-md-5">
+                    <div class="sidebar">
+                        <div class="sidebar__item">
+                            <h4>Search Books</h4>
+                            <form th:action="@{/loans/my}" method="get" class="search-form">
+                                <div class="input-group">
+                                    <input type="text" name="query" class="form-control"
+                                           placeholder="Search Books..."
+                                           th:value="${param.query}" />
+                                    <input type="hidden" name="status" th:value="${status}" />
+                                    <input type="hidden" name="page" value="0" />
+                                    <button class="btn btn-primary" type="submit">Search</button>
+                                </div>
+                            </form>
+                            <h4>Filter by Status</h4>
+                            <form th:action="@{/loans/my}" method="get">
+                                <label>
+                                    <input type="radio" name="status" value="active"
+                                           th:checked="${status == 'ACTIVE'}">
+                                    Active
+                                </label><br>
+                                <label>
+                                    <input type="radio" name="status" value="overdue"
+                                           th:checked="${status == 'OVERDUE'}">
+                                    Overdue
+                                </label><br>
+                                <label>
+                                    <input type="radio" name="status" value="returned"
+                                           th:checked="${status == 'RETURNED'}">
+                                    Returned
+                                </label><br>
+                                <button class="primary-btn" type="submit">Apply Filter</button>
+
+                                <a th:href="@{/loans/my}" class="secondary-btn" style="margin-left: 10px;">Clear</a>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-9 col-md-7">
+                    <h1>My Loans</h1>
+                    <div class="row">
+                        <div th:each="loan: ${loans}" class="col-lg-4 col-md-6 col-sm-6 loan-item" th:data-status="${loan.status}">
+                            <a th:href="@{/books/{isbn}(isbn=${loan.book.isbn})}" style="text-decoration: none; color: inherit;">
+                                <div class="product__item">
+                                    <div class="product__item__pic set-bg" style="display: flex; justify-content: center; align-items: center;">
+                                        <img th:src="${loan.book.coverUrl}" alt="Book Cover" style="width: auto; height: 100%;">
+                                    </div>
+                                    <div class="product__item__text">
+                                        <h6><span th:text="${loan.book.title}">Book Title</span></h6>
+                                        <p th:text="${#strings.listJoin(loan.book.authors.![firstName + ' ' + lastName], ', ')}">Author Names</p>
+                                        <h5 th:text="${'ISBN: ' + loan.book.isbn}">ISBN</h5>
+                                        <h5 class="loan-status" th:text="${loan.status}">Status</h5>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="product__pagination pagination" th:if="${totalPages > 1}">
+                        <a th:href="@{/loans/my(page=${currentPage - 1}, size=${size}, status=${status})}" th:if="${currentPage > 1}">&laquo;</a>
+                        <span th:each="i : ${#numbers.sequence(1, totalPages)}">
+                            <a th:href="@{/loans/my(page=${i}, size=${size}, status=${status})}"
+                               th:text="${i}"
+                               th:class="${i == currentPage ? 'active' : ''}"></a>
+                        </span>
+                        <a th:href="@{/loans/my(page=${currentPage + 1}, size=${size}, status=${status})}" th:if="${currentPage < totalPages}">&raquo;</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+</body>
+</html>

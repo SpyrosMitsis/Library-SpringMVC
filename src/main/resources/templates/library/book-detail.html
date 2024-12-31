@@ -4,14 +4,18 @@
       layout:decorate="~{layout/library-main}">
 <head>
     <title th:text="${book.title + ' - Book Detail'}">Book Detail</title>
-</head>
 <body>
 <div layout:fragment="content">
     <!-- Book Details Section Begin -->
     <section class="product-details spad">
         <div class="container">
-            <div th:if="${param.borrowed}" class="alert alert-success">
+            <div th:if="${param.borrowed}">
+            <div th:if="${param.borrowed[0] == 'true'}" class="alert alert-success">
                 Book borrowed successfully
+            </div>
+            <div th:if="${param.borrowed[0] == 'false'}" class="alert alert-danger">
+                <p th:text="${param.message}"></p>
+            </div>
             </div>
             <div class="row">
                 <div class="col-lg-6 col-md-6">
@@ -36,11 +40,12 @@
                         <p th:text="${book.description}">Book description goes here.</p>
 
                         <form th:action="@{/loans/borrow/{isbn}(isbn=${book.isbn})}" method="post">
-                            <button class="primary-btn" type="submit"
-                                    th:disabled="!${book.isAvailable}"
-                                    th:classappend="${!book.isAvailable} ? 'btn-disabled' : ''"
-                                    th:style="${!book.isAvailable} ? 'background-color: #e6e6e6' : ''">
-                                Borrow
+                            <button
+                                    class="primary-btn"
+                                    type="submit"
+                                    th:class="${bookLoan.borrowed || !book.isAvailable} ? 'primary-btn disabled' : 'primary-btn'"
+                                    th:disabled="${bookLoan.borrowed || !book.isAvailable}"
+                                    th:text="${bookLoan.borrowed} ? 'Borrowed' : (${!book.isAvailable} ? 'Not Available' : 'Borrow')">
                             </button>
                         </form>
                         <ul>

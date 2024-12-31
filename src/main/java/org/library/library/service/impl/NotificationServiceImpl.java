@@ -3,10 +3,8 @@ import org.library.library.model.AppUser;
 import org.library.library.model.BookLoan;
 import org.library.library.model.LoanStatus;
 import org.library.library.model.Notification;
-import org.library.library.repository.AppUserRepository;
 import org.library.library.repository.BookLoanRepository;
 import org.library.library.repository.NotificationRepository;
-import org.library.library.security.SecurityUtil;
 import org.library.library.service.AppUserService;
 import org.library.library.service.NotificationService;
 import org.springframework.stereotype.Service;
@@ -74,5 +72,19 @@ public class NotificationServiceImpl implements NotificationService {
     @Override
     public List<Notification> getUnreadNotifications() {
         return notificationRepository.findByUserAndIsReadFalse(appUserService.getAuthenticatedUser());
+    }
+
+    @Override
+    public void markAsRead(Long notificationId) {
+        Notification notification = notificationRepository.findById(notificationId).orElse(null);
+        if (notification != null) {
+            notification.setRead(true);
+            notificationRepository.save(notification);
+        }
+    }
+
+    @Override
+    public List<Notification> getAllNotificationsByUser(AppUser user) {
+        return notificationRepository.findByUser(user);
     }
 }

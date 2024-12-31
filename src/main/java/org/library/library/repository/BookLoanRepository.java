@@ -3,6 +3,7 @@ package org.library.library.repository;
 import org.library.library.dto.BookLoanSummaryDto;
 import org.library.library.dto.CategoryLoanSummaryDto;
 import org.library.library.model.AppUser;
+import org.library.library.model.Book;
 import org.library.library.model.BookLoan;
 import org.library.library.model.LoanStatus;
 import org.springframework.data.domain.Page;
@@ -24,6 +25,7 @@ public interface BookLoanRepository extends JpaRepository<BookLoan, Long> {
 
     Page<BookLoan> findByStatusAndDueDateBefore(LoanStatus status, Date date, PageRequest pageRequest);
     Page<BookLoan> findByBorrowerAndStatus(AppUser borrower, LoanStatus status, PageRequest pageRequest);
+    Page<BookLoan> findByBorrowerAndStatusIn(AppUser borrower, List<LoanStatus> statuses, PageRequest pageRequest);
 
     List<BookLoan> findByStatus(LoanStatus loanStatus);
 
@@ -56,6 +58,10 @@ public interface BookLoanRepository extends JpaRepository<BookLoan, Long> {
     ORDER BY loanCount DESC
     """)
     List<CategoryLoanSummaryDto> findCategoryLoanSummary(@Param("startDate") Date startDate, @Param("endDate") Date endDate);
+    BookLoan findByBookAndBorrowerAndStatus(Book book, AppUser appUser, LoanStatus loanStatus);
+
+    @Query("SELECT bl FROM BookLoan bl WHERE LOWER(bl.book.title) LIKE LOWER(CONCAT(:prefix, '%'))")
+    Page<BookLoan> findByBookTitleStartingWith(@Param("prefix") String prefix, PageRequest pageRequest);
 
 
 }

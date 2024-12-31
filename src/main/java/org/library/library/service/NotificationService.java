@@ -11,4 +11,8 @@ public interface NotificationService {
     void updateOverdueLoans();
     void checkLoanDueDates();
     List<Notification> getUnreadNotifications();
+
+    void markAsRead(Long notificationId);
+
+    List<Notification> getAllNotificationsByUser(AppUser user);
 }

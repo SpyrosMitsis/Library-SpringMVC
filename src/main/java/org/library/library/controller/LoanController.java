@@ -6,17 +6,11 @@ import org.library.library.service.BookLoanService;
 import org.library.library.service.BookService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.sql.Date;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
 
 @Controller
 @RequestMapping("/loans")
@@ -29,7 +23,12 @@ public class LoanController {
 
     @PostMapping("/borrow/{isbn}")
     public String borrowBook(@PathVariable String isbn) {
-        loanService.borrowBook(isbn);
+        try {
+            loanService.borrowBook(isbn);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return "redirect:/books/" + isbn + "?borrowed=false&message=" + e.getMessage();
+        }
         return "redirect:/books/" + isbn + "?borrowed=true";
     }
 
@@ -41,23 +40,26 @@ public class LoanController {
 
     @GetMapping("/my")
     public String myLoans(Model model,
+                          @RequestParam(required = false) String status,
+                          @RequestParam(required = false) String query,
                           @RequestParam(defaultValue = "0") int page,
-                          @RequestParam(defaultValue = "10") int size) {
-        Page<BookLoan> loanPage = loanService.getActiveLoansPaginated(PageRequest.of(page, size));
+                          @RequestParam(defaultValue = "9") int size) {
 
-        List<BookLoan> activeLoans = loanService.getActiveLoans();
-        System.out.println("Number of active loans: " + activeLoans.size());
-        activeLoans.forEach(loan -> {
-            System.out.println("Loan ID: " + loan.getId());
-            System.out.println("Book Title: " + loan.getBook().getTitle());
-            System.out.println("Book ISBN: " + loan.getBook().getIsbn());
-            System.out.println("--------------------");
-        });
+        Page<BookLoan> loanPage = loanService.getAllPersonalLoansPaginated(PageRequest.of(page, size));
+
+        if (query != null) {
+            loanPage = loanService.findBooksByBookStartingWithTitlePaginated(query, PageRequest.of(page, size));
+        }
+        if (status != null && !status.isEmpty()) {
+            loanPage = loanService.getPersonalLoansByStatusPaginated(status, PageRequest.of(page, size));
+        }
+
         model.addAttribute("loans", loanPage.getContent());
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", loanPage.getTotalPages());
         model.addAttribute("size", size);
-        return "my-loans";
+        model.addAttribute("status", status);
+        return "library/my-loans";
     }
 
 }

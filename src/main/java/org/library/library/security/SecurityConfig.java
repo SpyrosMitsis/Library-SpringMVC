@@ -44,6 +44,7 @@ public class SecurityConfig {
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .requestMatchers("/books/loan").authenticated()  // Secure /books/loan
                         .requestMatchers("/loans/**").authenticated()  // Secure /books/loan
+                        .requestMatchers("/notifications/**").authenticated()  // Secure /books/loan
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form

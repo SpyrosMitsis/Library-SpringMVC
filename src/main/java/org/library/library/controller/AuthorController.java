@@ -28,7 +28,7 @@ public class AuthorController {
     public String getAllAuthors(Model model) {
         List<Author> authors = authorService.findAll();
         model.addAttribute("authors", authors);
-        return "author-list";
+        return "library/author-list";
     }
     @GetMapping("/authors/{authorId}")
     public String getAuthorById(@PathVariable Long authorId, Model model) {
@@ -36,7 +36,7 @@ public class AuthorController {
         model.addAttribute("author", author);
         List<BookListDto> books = bookService.findByAuthorId(authorId);
         model.addAttribute("books", books);
-        return "author-detail";
+        return "library/author-detail";
     }
 
     @GetMapping("admin/authors/add")

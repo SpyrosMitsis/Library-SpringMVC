@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/admin-main}">
+<head>
+  <title>Notification List</title>
+  <style>
+    .read {
+      background-color: #f0f0f0;
+      color: #6c757d;
+    }
+
+    .unread {
+      background-color: #ffffff;
+      color: #000000;
+    }
+  </style>
+</head>
+<body>
+<div layout:fragment="content">
+  <div class="content-wrapper">
+      <table class="table ">
+        <thead>
+        <tr>
+          <th>#</th>
+          <th>Message</th>
+          <th>Created At</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="notification : ${notifications}"
+            th:class="${notification.read} ? 'read' : 'unread'">
+          <td th:text="${notificationStat.count}"></td>
+          <td th:text="${notification.message}"></td>
+          <td th:text="${#dates.format(notification.createdAt, 'dd-MM-yyyy')}"></td>
+        </tr>
+        </tbody>
+      </table>
+  </div>
+</div>
+
+<th:block layout:fragment="script">
+  <script th:src="@{/admin/assets/js/add-author.js}"></script>
+  <script th:src="@{/admin/assets/js/add-category.js}"></script>
+</th:block>
+
+</body>
+</html>

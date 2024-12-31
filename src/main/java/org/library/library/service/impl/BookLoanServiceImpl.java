@@ -1,17 +1,20 @@
 package org.library.library.service.impl;
 
+import org.library.library.dto.BookLoanDto;
 import org.library.library.dto.BookLoanSummaryDto;
 import org.library.library.dto.CategoryLoanSummaryDto;
 import org.library.library.model.*;
 import org.library.library.repository.AppUserRepository;
 import org.library.library.repository.BookInventoryRepository;
 import org.library.library.repository.BookLoanRepository;
+import org.library.library.repository.BookRepository;
 import org.library.library.security.SecurityUtil;
 import org.library.library.service.BookLoanService;
 import org.library.library.service.NotificationService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -33,7 +36,7 @@ public class BookLoanServiceImpl implements BookLoanService {
     private final BookInventoryRepository bookInventoryRepository;
     private final AppUserRepository appUserRepository;
 
-    public BookLoanServiceImpl(BookLoanRepository bookLoanRepository, BookInventoryRepository bookInventoryRepository, NotificationService notificationService, AppUserRepository appUserRepository) {
+    public BookLoanServiceImpl(BookLoanRepository bookLoanRepository, BookInventoryRepository bookInventoryRepository, NotificationService notificationService, AppUserRepository appUserRepository, BookRepository bookRepository) {
         this.bookLoanRepository = bookLoanRepository;
         this.bookInventoryRepository = bookInventoryRepository;
         this.appUserRepository = appUserRepository;
@@ -108,27 +111,35 @@ public class BookLoanServiceImpl implements BookLoanService {
     }
 
     @Override
-    public Page<BookLoan> getActiveLoansPaginated(PageRequest pageRequest) {
+    public Page<BookLoan> getPersonalLoansByStatusPaginated(String status, PageRequest pageRequest) {
+        LoanStatus loanStatus = LoanStatus.valueOf(status.toUpperCase());
         String username = SecurityUtil.getCurrentUsername();
         AppUser user = appUserRepository.findByUsername(username);
-        return bookLoanRepository.findByBorrowerAndStatus(user, LoanStatus.ACTIVE, pageRequest);
+        return bookLoanRepository.findByBorrowerAndStatus(user, loanStatus, pageRequest);
     }
 
     @Override
-    public List<BookLoan> getOverdueBookLoansPaginated(PageRequest pageRequest) {
+    public List<BookLoan> getPersonalLoansByStatus(String status)  {
         String username = SecurityUtil.getCurrentUsername();
         AppUser user = appUserRepository.findByUsername(username);
-        Date date = Date.from(Instant.from(LocalDateTime.now()));
-        return bookLoanRepository.findByStatusAndDueDateBefore(LoanStatus.OVERDUE, date, pageRequest).getContent();
+        return bookLoanRepository.findByBorrowerAndStatus(user, LoanStatus.valueOf(status.toUpperCase()));
     }
+
+    @Override
+    public Page<BookLoan> getAllPersonalLoansPaginated(PageRequest pageRequest) {
+        String username = SecurityUtil.getCurrentUsername();
+        AppUser user = appUserRepository.findByUsername(username);
+        return bookLoanRepository.findByBorrowerAndStatusIn(user, List.of(LoanStatus.ACTIVE, LoanStatus.OVERDUE, LoanStatus.RETURNED), pageRequest);
+
+    }
+
+
     @Override
     public Page<BookLoan> getAllLoansPaginated(
             Pageable pageable,
             @RequestParam("startDate") Date startDate,
             @RequestParam("endDate") Date endDate
     ) {
-        String username = SecurityUtil.getCurrentUsername();
-        AppUser user = appUserRepository.findByUsername(username);
         return bookLoanRepository.findByBorrowedAtBetween(startDate, endDate, pageable);
     }
     public Map<String, Long> getBookLoansGroupedByMonth() {
@@ -180,5 +191,30 @@ public class BookLoanServiceImpl implements BookLoanService {
         return bookLoanRepository.findCategoryLoanSummary(startDate, endDate);
     }
 
+    @Override
+    public BookLoanDto getBookLoanByBookAndBorrower(Book book, AppUser borrower) {
+        BookLoan loan = bookLoanRepository.findByBookAndBorrowerAndStatus(book, borrower, LoanStatus.ACTIVE);
+
+        if (loan == null) {
+            BookLoanDto loanDto = BookLoanDto.builder()
+                    .isbn(null)
+                    .isBorrowed(false)
+                    .build();
+            return loanDto;
+        }
+        else {
+            BookLoanDto loanDto = BookLoanDto.builder()
+                    .isbn(loan.getBook().getIsbn())
+                    .isBorrowed(true)
+                    .build();
+            return loanDto;
+        }
+    }
+
+    @Override
+    public Page<BookLoan> findBooksByBookStartingWithTitlePaginated(String title, PageRequest pageRequest) {
+
+        return bookLoanRepository.findByBookTitleStartingWith(title, pageRequest);
+    }
 }
 

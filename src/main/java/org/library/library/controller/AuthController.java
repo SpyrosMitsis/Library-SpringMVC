@@ -1,6 +1,5 @@
 package org.library.library.controller;
 
-import groovyjarjarpicocli.CommandLine;
 import org.library.library.dto.RegistrationDto;
 import org.library.library.model.AppUser;
 import org.library.library.service.AppUserService;
@@ -24,7 +23,7 @@ public class AuthController {
     public String getRegisterForm(Model model) {
         RegistrationDto user= new RegistrationDto();
         model.addAttribute("user", user);
-        return "register";
+        return "library/register";
     }
 
     @PostMapping("/register")
@@ -37,7 +36,7 @@ public class AuthController {
         }
         if (bindingResult.hasErrors()) {
             model.addAttribute("user", user);
-            return "register";
+            return "library/register";
         }
         appUserService.saveUser(user);
         return "redirect:/login?success";
@@ -45,7 +44,7 @@ public class AuthController {
 
     @GetMapping("/login")
     public String login() {
-        return "login";
+        return "library/login";
     }
 
 
