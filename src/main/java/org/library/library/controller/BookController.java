@@ -1,6 +1,8 @@
 package org.library.library.controller;
 import org.library.library.dto.BookDto;
+import org.library.library.dto.BookListDto;
 import org.library.library.dto.BookLoanDto;
+import org.library.library.dto.RatingDto;
 import org.library.library.mapper.BookMapper;
 import org.library.library.model.*;
 import org.library.library.service.*;
@@ -11,6 +13,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+import java.util.Map;
+
 
 @Controller
 public class BookController {
@@ -19,15 +24,17 @@ public class BookController {
     private final CategoryService categoryService;
     private final BookLoanService bookLoanService;
     private final AppUserService appUserService;
+    private final RatingService ratingService;
 
 
     @Autowired
-    public BookController(BookService bookService, AuthorService authorService, CategoryService categoryService, BookLoanService bookLoanService, AppUserService appUserService) {
+    public BookController(BookService bookService, AuthorService authorService, CategoryService categoryService, BookLoanService bookLoanService, AppUserService appUserService, RatingService ratingService) {
         this.bookService = bookService;
         this.authorService = authorService;
         this.categoryService = categoryService;
         this.bookLoanService = bookLoanService;
         this.appUserService = appUserService;
+        this.ratingService = ratingService;
     }
 
 
@@ -39,22 +46,26 @@ public class BookController {
                             @RequestParam(required = false) String query,
                             Model model) {
         PageRequest pageRequest = PageRequest.of(page - 1, size);
-        Page<Book> bookPage = bookService.findAllPaginated(pageRequest);
+        Page<BookListDto> books = bookService.findAllPaginated(pageRequest);
+
+        System.out.println("----------------------");
+        System.out.println( books.getContent());
+        System.out.println("----------------------");
 
         if (categoryId != null) {
-            bookPage = bookService.findByCategoryIdPaginated(categoryId, pageRequest);
+            books = bookService.findByCategoryIdPaginated(categoryId, pageRequest);
             Category category = categoryService.findById(categoryId);
             model.addAttribute("category", category);
         }
         if (query != null) {
-            bookPage = bookService.findByTitleContainingPaginated(query, pageRequest);
+            books = bookService.findByTitleContainingPaginated(query, pageRequest);
         }
 
-        model.addAttribute("books", bookPage);
+        model.addAttribute("books", books);
         model.addAttribute("currentPage", page);
         model.addAttribute("size", size);
-        model.addAttribute("totalPages", bookPage.getTotalPages());
-        model.addAttribute("totalItems", bookPage.getTotalElements());
+        model.addAttribute("totalPages", books.getTotalPages());
+        model.addAttribute("totalItems", books.getTotalElements());
 
         return "library/book-list";
     }
@@ -63,12 +74,13 @@ public class BookController {
     public String getAllBooks(@PathVariable String bookId, Model model) {
         Book book = bookService.findByIsbn(bookId);
         BookLoanDto bookLoan = bookLoanService.getBookLoanByBookAndBorrower(book, appUserService.getAuthenticatedUser());
+        List<RatingDto> ratings = ratingService.findByBookIsbn(bookId);
+        float averageRating = ratingService.getAverageRating(bookId);
 
-        System.out.println("-------------------");
-        System.out.println(bookLoan);
-        System.out.println("-------------------");
+        model.addAttribute("averageRating", averageRating);
         model.addAttribute("book", book);
         model.addAttribute("bookLoan", bookLoan);
+        model.addAttribute("ratings", ratings);
         return "library/book-detail";
     }
     @GetMapping("admin/books/add")
@@ -85,7 +97,7 @@ public class BookController {
         // Handle authors
         if (bookDTO.getAuthorIds() != null) {
             bookDTO.getAuthorIds().forEach(authorId -> {
-                book.addAuthor(authorService.findById(authorId));
+                book.getAuthors().add(authorService.findById(authorId));
             });
         }
 
@@ -95,14 +107,14 @@ public class BookController {
                         .firstName(newAuthorDTO.getFirstName())
                         .lastName(newAuthorDTO.getLastName())
                         .build());
-                book.addAuthor(author);
+                book.getAuthors().add(author);
             });
         }
 
         // Handle categories
         if (bookDTO.getCategoryIds() != null) {
             bookDTO.getCategoryIds().forEach(categoryId -> {
-                book.addCategory(categoryService.findById(categoryId));
+                book.getCategories().add(categoryService.findById(categoryId));
             });
         }
 
@@ -111,7 +123,7 @@ public class BookController {
                 Category category = categoryService.save(Category.builder()
                         .name(newCategoryDTO.getName())
                         .build());
-                book.addCategory(category);
+                book.getCategories().add(category);
             });
         }
 

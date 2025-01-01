@@ -1,6 +1,10 @@
 package org.library.library.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 @Data
@@ -10,10 +14,15 @@ import lombok.*;
 @Entity
 public class Rating {
     @Id
-    private Long ratingId;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     @ManyToOne
+    @NotNull
+    @JsonBackReference
     private AppUser user;
+
     @ManyToOne
+    @JsonBackReference
     private Book book;
     @Column(nullable = false)
     private Float score;

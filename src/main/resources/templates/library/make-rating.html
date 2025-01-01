@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:style="http://www.w3.org/1999/xhtml"
+      layout:decorate="~{layout/library-main}">
+<head>
+    <title>Register</title>
+</head>
+<div layout:fragment="content">
+    <div class="register-container">
+        <div class="register-header">
+            <h1>Rate "<span th:text="${book.title}"></span>"</h1>
+            <div th:if="${param.error}" class="alert alert-danger">
+                Couldn't rate book
+            </div>
+            <div th:if="${param.success}" class="alert alert-success">
+                Book rated successfully
+            </div>
+        </div>
+
+
+        <form th:action="@{/books/{isbn}/rate(isbn=${isbn})}" method="post">
+            <div class="form-group">
+                <div class="form-group">
+                    <label for="score">Rating</label>
+                    <input type="text"
+                           class="form-control"
+                           id="score"
+                           name="score"
+                           placeholder="Enter rating"
+                           style="width: fit-content"
+                           required />
+                </div>
+
+                <button type="submit" class="btn btn-primary">Rate book</button>
+            </div>
+        </form>
+    </div>
+</div>
+</html>
+

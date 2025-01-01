@@ -2,6 +2,7 @@ package org.library.library.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -32,9 +33,10 @@ public class AppUser {
             joinColumns = @JoinColumn(name = "username"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
 
-    @JsonBackReference
+    @JsonManagedReference
     private Set<Role> roles = new HashSet<>();
     @OneToMany(mappedBy = "user")
+    @JsonManagedReference
     private Set<Rating> ratings = new HashSet<>();
 
 

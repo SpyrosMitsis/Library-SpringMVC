@@ -1,5 +1,7 @@
 package org.library.library.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
 import jakarta.persistence.*;
 import java.util.*;
@@ -24,8 +26,8 @@ public class Book {
     @Builder.Default
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
+    @JsonBackReference
     private Set<Rating> ratings = new HashSet<>();
-
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "book_author",
@@ -35,6 +37,7 @@ public class Book {
     @Builder.Default
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
+    @JsonManagedReference
     private Set<Author> authors = new HashSet<>();
 
     @ManyToMany(fetch = FetchType.LAZY)
@@ -51,44 +54,11 @@ public class Book {
 
     @ManyToOne
     @JoinColumn(name = "created_by", nullable = false)
+    @JsonManagedReference
     private AppUser createdBy;
 
-    public Set<Rating> getRatings() {
-        return Collections.unmodifiableSet(ratings);
-    }
-
-    public Set<Author> getAuthors() {
-        return Collections.unmodifiableSet(authors);
-    }
-
-    public Set<Category> getCategories() {
-        return Collections.unmodifiableSet(categories);
-    }
-
-    // Helper methods for managing relationships
-    public void addAuthor(Author author) {
-        authors.add(author);
-    }
-
-    public void removeAuthor(Author author) {
-        authors.remove(author);
-    }
-
-    public void addCategory(Category category) {
-        categories.add(category);
-    }
-
-    public void removeCategory(Category category) {
-        categories.remove(category);
-    }
-
-    public void addRating(Rating rating) {
-        ratings.add(rating);
-        rating.setBook(this);
-    }
-
-    public void removeRating(Rating rating) {
-        ratings.remove(rating);
-        rating.setBook(null);
+    @Override
+    public int hashCode() {
+        return Objects.hash(isbn); // Use only immutable, unique fields
     }
 }

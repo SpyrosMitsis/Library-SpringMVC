@@ -61,9 +61,13 @@
                                     <div class="product__item__text">
                                         <h6><span th:text="${loan.book.title}">Book Title</span></h6>
                                         <p th:text="${#strings.listJoin(loan.book.authors.![firstName + ' ' + lastName], ', ')}">Author Names</p>
-                                        <h5 th:text="${'ISBN: ' + loan.book.isbn}">ISBN</h5>
+                                        <h6 th:text="${'ISBN: ' + loan.book.isbn}">ISBN</h6>
                                         <h5 class="loan-status" th:text="${loan.status}">Status</h5>
+                                        <div th:if="${loan.status.name() == 'RETURNED'}">
+                                            <a th:href="@{/books/{isbn}/rate(isbn=${loan.book.isbn})}" class="btn btn-primary">Review</a>
+                                        </div>
                                     </div>
+
                                 </div>
                             </a>
                         </div>

@@ -1,5 +1,6 @@
 package org.library.library.repository;
 
+import org.library.library.dto.BookListDto;
 import org.library.library.model.Book;
 import org.library.library.model.BookInventory;
 import org.springframework.data.domain.Page;

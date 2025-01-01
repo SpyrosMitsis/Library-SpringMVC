@@ -44,8 +44,8 @@
                     <div class="latest-product__text">
                         <h4>Most Loaned Books</h4>
                         <div class="latest-product__slider owl-carousel">
-                            <div th:each="rowIndex : ${#numbers.sequence(0, books.size() / 3)}" class="latest-prdouct__slider__item">
-                                <div th:each="book : ${books.subList(rowIndex * 3, rowIndex * 3 + 3 > books.size() ? books.size() : rowIndex * 3 + 3)}" class="latest-product__item">
+                            <div th:each="rowIndex : ${#numbers.sequence(0, mostLoanedBooks.size() / 3)}" class="latest-prdouct__slider__item">
+                                <div th:each="book : ${mostLoanedBooks.subList(rowIndex * 3, rowIndex * 3 + 3 > mostLoanedBooks.size() ? mostLoanedBooks.size() : rowIndex * 3 + 3)}" class="latest-product__item">
                                     <a th:href="@{'/books/' + ${book.isbn}}" class="latest-product__item">
                                         <div class="latest-product__item__pic">
                                             <img th:src="${book.coverUrl}" alt="" />
@@ -53,7 +53,30 @@
                                         <div class="latest-product__item__text">
                                             <span th:text="${book.title}"></span>
                                             <p>Written By</p>
-                                            <h5 th:text="${#strings.listJoin(book.authors.![firstName + ' ' + lastName], ', ')}">Written By</h5>
+                                            <h6 th:text="${#strings.listJoin(book.authors.![firstName + ' ' + lastName], ', ')}"></h6>
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="col-lg-4 col-md-6">
+                    <div class="latest-product__text">
+                        <h4>Top Rated Books</h4>
+                        <div class="latest-product__slider owl-carousel">
+                            <div th:each="rowIndex : ${#numbers.sequence(0, highestRatedBooks.size() / 3)}" class="latest-prdouct__slider__item">
+                                <div th:each="book : ${highestRatedBooks.subList(rowIndex * 3, rowIndex * 3 + 3 > highestRatedBooks.size() ? highestRatedBooks.size() : rowIndex * 3 + 3)}" class="latest-product__item">
+                                    <a th:href="@{'/books/' + ${book.isbn}}" class="latest-product__item">
+                                        <div class="latest-product__item__pic">
+                                            <img th:src="${book.coverUrl}" alt="" />
+                                        </div>
+                                        <div class="latest-product__item__text">
+                                            <span th:text="${book.title}"></span>
+                                            <p>Written By</p>
+                                            <h6 th:text="${#strings.listJoin(book.authors.![firstName + ' ' + lastName], ', ')}"></h6>
                                         </div>
                                     </a>
                                 </div>
@@ -64,6 +87,9 @@
             </div>
         </div>
     </section>
+
+
+
 </div>
 </body>
 </html>

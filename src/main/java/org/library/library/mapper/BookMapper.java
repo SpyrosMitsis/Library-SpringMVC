@@ -5,6 +5,8 @@ import org.library.library.dto.BookListDto;
 import org.library.library.model.Book;
 import org.springframework.stereotype.Component;
 
+import java.util.stream.Collectors;
+
 @Component
 public class BookMapper {
     public static BookListDto mapToBookListDto(Book book) {
@@ -14,8 +16,7 @@ public class BookMapper {
                 .coverUrl(book.getCoverUrl())
                 .releaseDate(book.getReleaseDate())
                 .isAvailable(book.getIsAvailable())
-                .authors(book.getAuthors())
-                .createdBy(book.getCreatedBy())
+                .authors(book.getAuthors().stream().map(AuthorMapper::mapToAuthorDto).collect(Collectors.toSet()))
                 .build();
     }
     public static Book mapBookDtoToBook(BookDto bookListDto) {

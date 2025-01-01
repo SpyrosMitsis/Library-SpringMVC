@@ -4,6 +4,8 @@ import org.library.library.dto.BookListDto;
 import org.library.library.model.Book;
 import org.library.library.model.BookInventory;
 
+import java.util.stream.Collectors;
+
 public class BookInventoryMapper {
 
     public static BookListDto mapToBookListDto(BookInventory bookInventory) {
@@ -13,7 +15,7 @@ public class BookInventoryMapper {
                 .coverUrl(bookInventory.getBook().getCoverUrl())
                 .releaseDate(bookInventory.getBook().getReleaseDate())
                 .isAvailable(bookInventory.getBook().getIsAvailable())
-                .authors(bookInventory.getBook().getAuthors())
+                .authors(bookInventory.getBook().getAuthors().stream().map(AuthorMapper::mapToAuthorDto).collect(Collectors.toSet()))
                 .build();
     }
 }

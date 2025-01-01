@@ -17,8 +17,8 @@ public interface BookService {
     void delete(Book book);
     Book addBook(Book book);
     List<BookListDto> findByAuthorId(Long authorId);
-    Page<Book> findAllPaginated(PageRequest pageRequest);
-    Page<Book> findByCategoryIdPaginated(Long categoryId, PageRequest pageRequest);
-    Page<Book> findByTitleContainingPaginated(String title, PageRequest pageRequest);
+    Page<BookListDto> findAllPaginated(PageRequest pageRequest);
+    Page<BookListDto> findByCategoryIdPaginated(Long categoryId, PageRequest pageRequest);
+    Page<BookListDto> findByTitleContainingPaginated(String title, PageRequest pageRequest);
     List<BookListDto> getTopNMostLoanedBooks();
 }

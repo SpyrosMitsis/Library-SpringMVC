@@ -30,12 +30,12 @@
                     <div class="product__details__text">
                         <h3 th:text="${book.title}">Book Title</h3>
                         <div class="product__details__rating">
-                            <i class="fa fa-star"></i>
-                            <i class="fa fa-star"></i>
-                            <i class="fa fa-star"></i>
-                            <i class="fa fa-star"></i>
-                            <i class="fa fa-star-half-o"></i>
-                            <span>(18 reviews)</span>
+                            <th:block th:each="star : ${#numbers.sequence(1, 5)}">
+                                <i class="fa" th:classappend="
+                                        ${averageRating>= star} ? 'fa-star' :
+                                        (${averageRating >= star - 0.5 and averageRating < star} ? 'fa-star-half-o' : 'fa-star-o')"></i>
+                            </th:block>
+                            (<span th:text="${ratings.size()}"></span>)
                         </div>
                         <p th:text="${book.description}">Book description goes here.</p>
 
@@ -51,15 +51,11 @@
                         <ul>
                             <li><b>Author(s)</b> <span th:text="${#strings.listJoin(book.authors.![firstName + ' ' + lastName], ', ')}">Author Names</span></li>
                             <li><b>ISBN</b> <span th:text="${book.isbn}">ISBN Number</span></li>
-                            <li><b>Release Date</b><span th:text="${book.releaseDate}"></span></li>
-                            <li><b>Share on</b>
-                                <div class="share">
-                                    <a href="#"><i class="fa fa-facebook"></i></a>
-                                    <a href="#"><i class="fa fa-twitter"></i></a>
-                                    <a href="#"><i class="fa fa-instagram"></i></a>
-                                    <a href="#"><i class="fa fa-pinterest"></i></a>
-                                </div>
-                            </li>
+                            <li><b>Release Date</b><span th:text="${#dates.format(book.releaseDate, 'dd-MM-yyyy')}"></span></li>
+                            <li><b>Genre:</b> <span th:each="category, iterStat : ${book.categories}">
+                                            <a th:href="@{/books(categoryId=${category.id})}" th:text="${category.name}"> </a>
+                                            <span th:if="${!iterStat.last}">, </span>
+                                        </span></li>
                         </ul>
                     </div>
                 </div>
@@ -67,41 +63,24 @@
                     <div class="product__details__tab">
                         <ul class="nav nav-tabs" role="tablist">
                             <li class="nav-item">
-                                <a class="nav-link active" data-toggle="tab" href="#tabs-1" role="tab"
-                                   aria-selected="true">Description</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" data-toggle="tab" href="#tabs-2" role="tab"
-                                   aria-selected="false">Additional Information</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" data-toggle="tab" href="#tabs-3" role="tab"
-                                   aria-selected="false">Reviews <span>(1)</span></a>
+                                <a class="nav-link active" aria-selected="true" data-toggle="collapse" href="#ratingsSection" role="button" aria-expanded="false" aria-controls="ratingsSection">Ratings (<span th:text="${ratings.size()}"></span>)</a>
                             </li>
                         </ul>
-                        <div class="tab-content">
-                            <div class="tab-pane active" id="tabs-1" role="tabpanel">
-                                <div class="product__details__tab__desc">
-                                    <h6>Book Description</h6>
-                                    <p th:text="${book.description}">Full book description goes here.</p>
-                                </div>
-                            </div>
-                            <div class="tab-pane" id="tabs-2" role="tabpanel">
-                                <div class="product__details__tab__desc">
-                                    <h6>Additional Information</h6>
-                                    <ul>
-                                        <li><b>Publisher:</b> <span>Publisher Name</span></li>
-                                        <li><b>Genre:</b> <span th:each="category, iterStat : ${book.categories}">
-                                            <a th:href="@{/books(categoryId=${category.id})}" th:text="${category.name}"> </a>
-                                            <span th:if="${!iterStat.last}">, </span>
-                                        </span>
-                                    </ul>
-                                </div>
-                            </div>
-                            <div class="tab-pane" id="tabs-3" role="tabpanel">
-                                <div class="product__details__tab__desc">
-                                    <h6>Book Reviews</h6>
-                                    <p>Book reviews will be displayed here.</p>
+                        <div class="collapse" id="ratingsSection">
+                            <div class="tab-content">
+                                <div class="tab-pane active" id="tabs-3" role="tabpanel">
+                                    <div class="product__details__tab__desc" th:each="rating : ${ratings}">
+                                        <div class="product__details__text">
+                                            <h6 th:text="${rating.username}"></h6>
+                                            <div class="product__details__rating d-flex align-items-center">
+                                                <th:block th:each="star : ${#numbers.sequence(1, 5)}">
+                                                    <i class="fa" th:classappend="
+                                        ${rating.score >= star} ? 'fa-star' :
+                                        (${rating.score >= star - 0.5 and rating.score < star} ? 'fa-star-half-o' : 'fa-star-o')"></i>
+                                                </th:block>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>

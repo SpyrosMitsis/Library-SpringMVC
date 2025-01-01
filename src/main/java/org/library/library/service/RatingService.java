@@ -1,5 +1,8 @@
 package org.library.library.service;
 
+import org.library.library.dto.BookListDto;
+import org.library.library.dto.RatingDto;
+import org.library.library.dto.RatingSummaryDto;
 import org.library.library.model.Rating;
 
 import java.util.List;
@@ -11,7 +14,10 @@ public interface RatingService {
 
     Rating findById(Long id);
 
-    List<Rating> findByBookIsbn(String isbn);
+    List<RatingDto> findByBookIsbn(String isbn);
+    List<RatingDto> findByUserUsername(String username);
+    float getAverageRating(String isbn);
+    void rateBook(RatingDto ratingDto);
 
-    List<Rating> findByUserUsername(String username);
+    List<BookListDto> getHighestRatedBooks();
 }

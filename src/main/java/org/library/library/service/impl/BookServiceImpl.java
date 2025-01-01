@@ -2,6 +2,8 @@ package org.library.library.service.impl;
 
 import org.library.library.dto.BookListDto;
 import org.library.library.dto.BookLoanSummaryDto;
+import org.library.library.mapper.BookInventoryMapper;
+import org.library.library.mapper.BookMapper;
 import org.library.library.model.AppUser;
 import org.library.library.model.Book;
 import org.library.library.model.BookInventory;
@@ -20,6 +22,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static java.util.stream.Collectors.toList;
 import static org.library.library.mapper.BookMapper.mapToBookListDto;
 
 @Service
@@ -40,7 +43,7 @@ public class BookServiceImpl implements BookService {
     @Override
     public List<BookListDto> findAll() {
         List<Book> books = bookRepository.findAll();
-        return books.stream().map((book) -> mapToBookListDto(book)).collect(Collectors.toList());
+        return books.stream().map(BookMapper::mapToBookListDto).collect(toList());
     }
 
     @Override
@@ -86,25 +89,30 @@ public class BookServiceImpl implements BookService {
     @Override
     public List<BookListDto> findByAuthorId(Long authorId) {
         List<Book> books = bookRepository.findBooksByAuthorsId(authorId);
-        return books.stream().map((book) -> mapToBookListDto(book)).collect(Collectors.toList());
+        return books.stream().map(BookMapper::mapToBookListDto).collect(toList());
     }
+
     @Override
-    public Page<Book> findAllPaginated(PageRequest pageRequest) {
-        Page<BookInventory> bookPage = bookInventoryRepository.findAll(pageRequest);
-        return bookPage.map(BookInventory::getBook);
+    public Page<BookListDto> findAllPaginated(PageRequest pageRequest) {
+        Page<BookInventory> booksInvetory = bookInventoryRepository.findAll(pageRequest);
+
+        Page<BookListDto> books = booksInvetory.map(BookInventoryMapper::mapToBookListDto);
+
+        return books;
+
 
     }
 
     @Override
-    public Page<Book> findByCategoryIdPaginated(Long categoryId, PageRequest pageRequest) {
+    public Page<BookListDto> findByCategoryIdPaginated(Long categoryId, PageRequest pageRequest) {
         Page<BookInventory> bookPage = bookInventoryRepository.findByBookCategoriesId(categoryId, pageRequest);
-        return bookPage.map(BookInventory::getBook);
+        return bookPage.map(BookInventoryMapper::mapToBookListDto);
     }
 
     @Override
-    public Page<Book> findByTitleContainingPaginated(String title, PageRequest pageRequest) {
+    public Page<BookListDto> findByTitleContainingPaginated(String title, PageRequest pageRequest) {
         Page<BookInventory> bookPage = bookInventoryRepository.findByBookTitleContaining(title, pageRequest);
-        return bookPage.map(BookInventory::getBook);
+        return bookPage.map(BookInventoryMapper::mapToBookListDto);
     }
 
     @Override
@@ -112,7 +120,7 @@ public class BookServiceImpl implements BookService {
         List<BookLoanSummaryDto> activeLoans = bookLoanService.getTopNMostLoanedBooks(LoanStatus.ACTIVE, 10);
         List<BookListDto> books = activeLoans.stream()
                 .map(loan -> mapToBookListDto(findByIsbn(loan.getIsbn())))
-                .collect(Collectors.toList());
+                .collect(toList());
 
         return books;
     }
