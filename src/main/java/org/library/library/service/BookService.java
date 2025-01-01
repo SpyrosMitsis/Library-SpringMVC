@@ -21,4 +21,6 @@ public interface BookService {
     Page<BookListDto> findByCategoryIdPaginated(Long categoryId, PageRequest pageRequest);
     Page<BookListDto> findByTitleContainingPaginated(String title, PageRequest pageRequest);
     List<BookListDto> getTopNMostLoanedBooks();
+
+    List<BookListDto> getBookSelection();
 }

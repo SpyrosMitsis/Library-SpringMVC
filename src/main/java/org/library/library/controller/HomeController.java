@@ -34,11 +34,10 @@ public class HomeController {
         List<CategoryLoanSummaryDto> categoryLoanSummaryDtos = bookLoanService.findCategoryLoanSummary();
         List<BookListDto> mostLoanedBooks = bookService.getTopNMostLoanedBooks();
         List<BookListDto> highestRatedBooks = ratingService.getHighestRatedBooks();
-        System.out.println("------------------------");
-        System.out.println(highestRatedBooks);
-        System.out.println("------------------------");
+        List<BookListDto> SelectionBooks = bookService.getBookSelection();
 
         model.addAttribute("categories", categoryLoanSummaryDtos);
+        model.addAttribute("SelectionBooks", SelectionBooks);
         model.addAttribute("mostLoanedBooks", mostLoanedBooks);
         model.addAttribute("highestRatedBooks", highestRatedBooks);
 

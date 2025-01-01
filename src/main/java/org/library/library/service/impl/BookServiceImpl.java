@@ -4,23 +4,19 @@ import org.library.library.dto.BookListDto;
 import org.library.library.dto.BookLoanSummaryDto;
 import org.library.library.mapper.BookInventoryMapper;
 import org.library.library.mapper.BookMapper;
-import org.library.library.model.AppUser;
-import org.library.library.model.Book;
-import org.library.library.model.BookInventory;
-import org.library.library.model.LoanStatus;
+import org.library.library.model.*;
 import org.library.library.repository.AppUserRepository;
 import org.library.library.repository.BookInventoryRepository;
 import org.library.library.repository.BookRepository;
+import org.library.library.repository.BookSelectionRepository;
 import org.library.library.security.SecurityUtil;
 import org.library.library.service.BookLoanService;
 import org.library.library.service.BookService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
 import static org.library.library.mapper.BookMapper.mapToBookListDto;
@@ -32,12 +28,14 @@ public class BookServiceImpl implements BookService {
     private final AppUserRepository appUserRepository;
     private final BookInventoryRepository bookInventoryRepository;
     private final BookLoanService bookLoanService;
+    private final BookSelectionRepository bookSelectionRepository;
 
-    public BookServiceImpl(BookRepository bookRepository, AppUserRepository appUserRepository, BookInventoryRepository bookInventoryRepository, BookLoanService bookLoanService) {
+    public BookServiceImpl(BookRepository bookRepository, AppUserRepository appUserRepository, BookInventoryRepository bookInventoryRepository, BookLoanService bookLoanService, BookSelectionRepository bookSelectionRepository) {
         this.bookRepository = bookRepository;
         this.appUserRepository = appUserRepository;
         this.bookInventoryRepository = bookInventoryRepository;
         this.bookLoanService = bookLoanService;
+        this.bookSelectionRepository = bookSelectionRepository;
     }
 
     @Override
@@ -123,5 +121,11 @@ public class BookServiceImpl implements BookService {
                 .collect(toList());
 
         return books;
+    }
+    @Override
+    public List<BookListDto> getBookSelection(){
+        List<BookSelection> bookSelection = bookSelectionRepository.findAll();
+        List<Book> books = bookSelection.stream().map(BookSelection::getBook).toList();
+        return books.stream().map(BookMapper::mapToBookListDto).toList();
     }
 }
