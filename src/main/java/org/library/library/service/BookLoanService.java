@@ -41,4 +41,5 @@ public interface BookLoanService {
     List<CategoryLoanSummaryDto> findCategoryLoanSummary();
     BookLoanDto getBookLoanByBookAndBorrower(Book book, AppUser borrower);
     Page<BookLoan> findBooksByBookStartingWithTitlePaginated(String title, PageRequest pageRequest);
+    Page<BookLoan> findBooksByBorrowerAndStatusIn(AppUser borrower, List<LoanStatus> statuses, PageRequest pageRequest);
 }

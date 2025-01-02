@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/library-main}">
+<body>
+<main layout:fragment="content">
+    <div class="content-wrapper">
+        <h1>User Loans</h1>
+
+
+        <div th:if="${param.returned}" class="alert alert-success">
+            Book Returned Successfully
+        </div>
+        <table class="table table-hover">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>ISBN</th>
+                <th>Book Title</th>
+                <th>Borrowed At</th>
+                <th>Due Date</th>
+                <th>Status</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="loan : ${loans}">
+                <td th:text="${loan.id}"></td>
+                <td th:text="${loan.book.isbn}"></td>
+                <td th:text="${loan.book.title}"></td>
+                <td th:text="${loan.borrowedAt}"></td>
+                <td th:text="${loan.dueDate}"></td>
+                <td class="status-cell">
+                    <span th:class="${loan.status.name() == 'OVERDUE' ? 'text-danger' : ''}"
+                          th:text="${loan.status}"></span>
+                    <form th:action="@{loans/librarian/{username}/return/{loandId} (username=${username}, loandId=${loan.id})}"
+                          method="post"
+                          style="display: inline;">
+                        <button type="submit"
+                                class="btn btn-sm btn-primary action-button">
+                            Mark as Returned
+                        </button>
+                    </form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+
+        <div class="product__pagination pagination" th:if="${totalPages > 1}">
+            <a th:href="@{/loans/librarian/{username} (username=${username}, page=${currentPage}, size=${size})}" th:if="${currentPage > 1}">&laquo;</a>
+            <span th:each="i : ${#numbers.sequence(1, totalPages)}">
+                <a th:href="@{/loans/librarian/{username} (username=${username}, page=${i}, size=${size})}"
+                   th:text="${i}"
+                   th:class="${i == currentPage ? 'active' : ''}"></a>
+            </span>
+            <a th:href="@{/loans/librarian/{username} (username=${username}, page=${currentPage + 1}, size=${size})}" th:if="${currentPage < totalPages}">&raquo;</a>
+        </div>
+    </div>
+</main>
+</body>
+</html>

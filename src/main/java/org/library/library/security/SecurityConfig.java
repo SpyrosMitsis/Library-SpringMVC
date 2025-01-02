@@ -42,8 +42,9 @@ public class SecurityConfig {
                                 "/"
                         ).permitAll()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
-                        .requestMatchers("/books/loan").authenticated()  // Secure /books/loan
-                        .requestMatchers("/loans/**").authenticated()  // Secure /books/loan
+                        .requestMatchers("/books/loan").authenticated()
+                        .requestMatchers("/loans/librarian/**").hasAnyRole("LIBRARIAN", "ADMIN")
+                        .requestMatchers("/loans/**").authenticated()
                         .requestMatchers("/notifications/**").authenticated()  // Secure /books/loan
                         .anyRequest().authenticated()
                 )

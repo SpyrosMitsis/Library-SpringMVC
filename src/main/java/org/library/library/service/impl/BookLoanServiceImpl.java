@@ -89,7 +89,6 @@ public class BookLoanServiceImpl implements BookLoanService {
             throw new IllegalStateException("Book already returned");
         }
 
-        // Update inventory
         BookInventory inventory = bookInventoryRepository.findByBookIsbn(loan.getBook().getIsbn())
                 .stream()
                 .findFirst()
@@ -97,7 +96,7 @@ public class BookLoanServiceImpl implements BookLoanService {
         inventory.setAvailableQuantity(inventory.getAvailableQuantity() + 1);
         bookInventoryRepository.save(inventory);
 
-        loan.setReturnedAt(Date.from(Instant.from(LocalDateTime.now())));
+        loan.setReturnedAt(Date.from(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant()));
         loan.setStatus(LoanStatus.RETURNED);
 
         return bookLoanRepository.save(loan);
@@ -215,6 +214,11 @@ public class BookLoanServiceImpl implements BookLoanService {
     public Page<BookLoan> findBooksByBookStartingWithTitlePaginated(String title, PageRequest pageRequest) {
 
         return bookLoanRepository.findByBookTitleContaining(title, pageRequest);
+    }
+
+    @Override
+    public Page<BookLoan> findBooksByBorrowerAndStatusIn(AppUser borrower, List<LoanStatus> statuses, PageRequest pageRequest) {
+        return bookLoanRepository.findByBorrowerAndStatusIn(borrower, statuses, pageRequest);
     }
 }
 
