@@ -1,8 +1,6 @@
 package org.library.library.controller;
-import org.library.library.dto.BookDto;
-import org.library.library.dto.BookListDto;
-import org.library.library.dto.BookLoanDto;
-import org.library.library.dto.RatingDto;
+import org.library.library.dto.*;
+import org.library.library.mapper.AuthorMapper;
 import org.library.library.mapper.BookMapper;
 import org.library.library.model.*;
 import org.library.library.service.*;
@@ -13,8 +11,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 
 @Controller
@@ -144,6 +142,90 @@ public class BookController {
         }
 
         return "redirect:/admin/books/add?success";
+    }
+
+    @GetMapping("admin/books/all")
+    public String getAllBooks(Model model) {
+        List<BookListDto> books = bookService.findAll();
+        model.addAttribute("books", books);
+        return "admin/book-list";
+    }
+
+    @GetMapping("admin/books/update/{isbn}")
+    public String showModifyBookForm(@PathVariable String isbn, Model model) {
+        Book book = bookService.findByIsbn(isbn);
+        BookDto bookDto = BookMapper.mapToBookDto(book);
+        List<Author> allAuthors = authorService.findAll();
+
+        // Get authors duh
+        Set<Long> bookAuthorIds = Collections.emptySet();
+        if (book.getAuthors() != null) {
+            bookAuthorIds = new HashSet<>(book.getAuthors().stream().map(Author::getId).toList());
+        }
+        List<Category> categories = categoryService.findAll();
+
+
+        List<Category> allCategories = categoryService.findAll();
+        Set<Long> bookCategoryIds = new HashSet<>();
+        if (book.getCategories() != null) {
+            bookCategoryIds = new HashSet<>(book.getCategories().stream().map(Category::getId).toList());
+        }
+
+        model.addAttribute("book", bookDto);
+
+        model.addAttribute("authors", allAuthors);
+        model.addAttribute("bookAuthorIds", bookAuthorIds);
+
+        model.addAttribute("categories", categories);
+        model.addAttribute("bookCategoryIds", bookCategoryIds);
+        return "admin/update-book";
+    }
+
+    @PostMapping("admin/books/update/{isbn}")
+    public String updateBook(@PathVariable String isbn, @ModelAttribute BookDto bookDTO) {
+        Book existingBook = bookService.findByIsbn(isbn);
+        Book updatedBook = BookMapper.mapBookDtoToBook(bookDTO);
+        updatedBook.setIsbn(isbn);
+
+
+        existingBook.getAuthors().clear();
+        existingBook.getCategories().clear();
+
+        if (bookDTO.getAuthorIds() != null) {
+            bookDTO.getAuthorIds().forEach(authorId -> {
+                updatedBook.getAuthors().add(authorService.findById(authorId));
+            });
+        }
+
+        if (bookDTO.getNewAuthors() != null) {
+            bookDTO.getNewAuthors().forEach(newAuthorDTO -> {
+                Author author = authorService.save(Author.builder()
+                        .firstName(newAuthorDTO.getFirstName())
+                        .lastName(newAuthorDTO.getLastName())
+                        .build());
+                updatedBook.getAuthors().add(author);
+            });
+        }
+
+        // Handle categories
+        if (bookDTO.getCategoryIds() != null) {
+            bookDTO.getCategoryIds().forEach(categoryId -> {
+                updatedBook.getCategories().add(categoryService.findById(categoryId));
+            });
+        }
+
+        if (bookDTO.getNewCategories() != null) {
+            bookDTO.getNewCategories().forEach(newCategoryDTO -> {
+                Category category = categoryService.save(Category.builder()
+                        .name(newCategoryDTO.getName())
+                        .build());
+                updatedBook.getCategories().add(category);
+            });
+        }
+
+        Book savedBook = bookService.save(updatedBook);
+
+        return "redirect:/admin/books/update/" + isbn + "?success";
     }
 
 

@@ -7,12 +7,30 @@
           <span class="menu-title">Dashboard</span>
         </a>
       </li>
+
       <li class="nav-item nav-category">Actions</li>
       <li class="nav-item">
-        <a class="nav-link" th:href="@{/admin/books/add}">
-          <i class="menu-icon mdi mdi-book-plus"></i>
-          <span class="menu-title">Add Book</span>
+        <a class="nav-link" data-bs-toggle="collapse" href="#ui-basic" aria-expanded="false" aria-controls="ui-basic">
+          <i class="menu-icon mdi mdi-book"></i>
+          <span class="menu-title">Book Management</span>
+          <i class="menu-arrow"></i>
         </a>
+        <div class="collapse" id="ui-basic">
+          <ul class="nav flex-column sub-menu">
+            <li class="nav-item">
+              <a class="nav-link" th:href="@{/admin/books/add}">
+                <i class="menu-icon mdi mdi-book-plus"></i>
+                <span class="menu-title">Add Book</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" th:href="@{/admin/books/all}">
+                <i class="menu-icon mdi mdi-book-cog"></i>
+                <span class="menu-title">Update Book</span>
+              </a>
+            </li>
+          </ul>
+        </div>
       </li>
       <li class="nav-item">
         <a class="nav-link" th:href="@{/admin/inventory/list}">

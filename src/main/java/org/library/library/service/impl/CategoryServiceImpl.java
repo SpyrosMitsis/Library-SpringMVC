@@ -1,6 +1,6 @@
 package org.library.library.service.impl;
 
-import jakarta.websocket.server.ServerEndpoint;
+import org.library.library.dto.CategoryDto;
 import org.library.library.model.Category;
 import org.library.library.repository.CategoryRepository;
 import org.library.library.service.CategoryService;
@@ -30,5 +30,14 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public Category save(Category category) {
         return categoryRepository.save(category);
+    }
+
+    @Override
+    public List<CategoryDto> findByBooksIsbn(String isbn) {
+        List<Category> categories = categoryRepository.findByBooksIsbn(isbn);
+        return categories.stream().map(category -> CategoryDto.builder()
+                .name(category.getName())
+                .build()
+        ).toList();
     }
 }

@@ -4,14 +4,12 @@ import org.library.library.dto.BookLoanSummaryDto;
 import org.library.library.dto.CategoryLoanSummaryDto;
 import org.library.library.model.BookLoan;
 import org.library.library.model.LoanStatus;
-import org.library.library.model.Notification;
 import org.library.library.repository.AppUserRepository;
 import org.library.library.service.AppUserService;
 import org.library.library.service.BookLoanService;
 import org.library.library.service.NotificationService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -37,6 +35,12 @@ public class DashboardController {
         this.loanService = loanService;
         this.appUserService = appUserService;
         this.notificationService = notificationService;
+    }
+
+
+    @GetMapping("")
+    public String redirectRootToDashboard() {
+        return "redirect:/admin/dashboard";
     }
 
     @GetMapping("/dashboard")

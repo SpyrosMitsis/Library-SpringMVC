@@ -1,5 +1,6 @@
 package org.library.library.service.impl;
 
+import org.library.library.dto.BookDto;
 import org.library.library.dto.BookListDto;
 import org.library.library.dto.BookLoanSummaryDto;
 import org.library.library.mapper.BookInventoryMapper;

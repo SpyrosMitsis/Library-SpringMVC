@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/admin-main}">
+<head>
+    <title>Book Inventory</title>
+    </style>
+</head>
+<body>
+<div layout:fragment="content">
+    <div class="content-wrapper">
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                <tr>
+                    <th>ISBN</th>
+                    <th>Book Title</th>
+                    <th>Authors</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="book: ${books}"
+                    class="clickable-row"
+                    th:onclick="'window.location.href=\'' + @{/admin/books/update/{isbn}(isbn=${#strings.escapeJavaScript(book.isbn)})} + '\''"
+
+                    style="cursor: pointer">
+                    <td th:text="${book.isbn}"></td>
+                    <td th:text="${book.title}"></td>
+                    <td th:text="${#strings.listJoin(book.authors.![firstName + ' ' + lastName], ', ')}">Author Names</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+</body>
+</html>

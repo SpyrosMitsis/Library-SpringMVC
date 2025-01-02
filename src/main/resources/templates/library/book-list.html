@@ -50,7 +50,7 @@
                   </div>
                   <div class="product__item__text">
                     <h6><span th:text="${book.title}">Book Title</span></h6>
-<!--                    <p th:text="${#strings.listJoin(book.authors.![firstName + ' ' + lastName], ', ')}">Author Names</p>-->
+                    <p th:text="${#strings.listJoin(book.authors.![firstName + ' ' + lastName], ', ')}">Author Names</p>
                     <h5 th:text="${'ISBN: ' + book.isbn}">ISBN</h5>
                   </div>
                 </div>

@@ -54,7 +54,7 @@ public class NotificationServiceImpl implements NotificationService {
 
     @Override
     public void checkLoanDueDates() {
-        java.util.Date tomorrow = java.sql.Date.valueOf(LocalDate.now().plusDays(1));
+        Date tomorrow = Date.valueOf(LocalDate.now().plusDays(1));
 
         List<BookLoan> dueTomorrow = bookLoanRepository.findByStatusAndDueDateBefore(
                 LoanStatus.ACTIVE,
