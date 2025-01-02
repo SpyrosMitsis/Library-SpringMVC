@@ -7,8 +7,11 @@ import org.library.library.repository.AppUserRepository;
 import org.library.library.repository.RoleRepository;
 import org.library.library.security.SecurityUtil;
 import org.library.library.service.AppUserService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 import java.util.Set;
@@ -54,7 +57,11 @@ public class AppUserServiceImpl implements AppUserService {
     }
 
     @Override
-    public List<AppUser> getAllUsers() {
-        return appUserRepository.findAll();
+    public Page<AppUser> getAllUsersPaginated(PageRequest pageRequest) {
+        return appUserRepository.findAll(pageRequest);
+    }
+    @Override
+    public Page<AppUser> getAllUsersByUsernamePaginated(@RequestParam("username") String username, PageRequest pageRequest) {
+        return appUserRepository.findAppUsersByUsernameContaining(username, pageRequest);
     }
 }

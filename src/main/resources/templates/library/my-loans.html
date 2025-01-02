@@ -74,9 +74,9 @@
                     </div>
                     <div class="product__pagination pagination" th:if="${totalPages > 1}">
                         <a th:href="@{/loans/my(page=${currentPage - 1}, size=${size}, status=${status})}" th:if="${currentPage > 1}">&laquo;</a>
-                        <span th:each="i : ${#numbers.sequence(1, totalPages)}">
+                        <span th:each="i : ${#numbers.sequence(0, totalPages)}">
                             <a th:href="@{/loans/my(page=${i}, size=${size}, status=${status})}"
-                               th:text="${i}"
+                               th:text="${i + 1}"
                                th:class="${i == currentPage ? 'active' : ''}"></a>
                         </span>
                         <a th:href="@{/loans/my(page=${currentPage + 1}, size=${size}, status=${status})}" th:if="${currentPage < totalPages}">&raquo;</a>
