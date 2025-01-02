@@ -28,6 +28,13 @@ public class HomeController {
         this.ratingService = ratingService;
     }
 
+
+    @GetMapping("")
+    public String redictToHome() {
+        return "redirect:/home";
+    }
+
+
     @GetMapping("/home")
     public String getAllBooks(Model model) {
 

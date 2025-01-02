@@ -162,7 +162,7 @@ public class BookController {
         if (book.getAuthors() != null) {
             bookAuthorIds = new HashSet<>(book.getAuthors().stream().map(Author::getId).toList());
         }
-        List<Category> categories = categoryService.findAll();
+        List<CategoryDto> categories = categoryService.findByBooksIsbn(isbn);
 
 
         List<Category> allCategories = categoryService.findAll();
@@ -172,11 +172,11 @@ public class BookController {
         }
 
         model.addAttribute("book", bookDto);
-
         model.addAttribute("authors", allAuthors);
         model.addAttribute("bookAuthorIds", bookAuthorIds);
 
-        model.addAttribute("categories", categories);
+        model.addAttribute("categories", allCategories);
+        model.addAttribute("categoryIds", bookCategoryIds);
         model.addAttribute("bookCategoryIds", bookCategoryIds);
         return "admin/update-book";
     }
@@ -226,6 +226,13 @@ public class BookController {
         Book savedBook = bookService.save(updatedBook);
 
         return "redirect:/admin/books/update/" + isbn + "?success";
+    }
+
+    @PostMapping("admin/books/delete/{isbn}")
+    public String deleteBook(@PathVariable String isbn) {
+        Book book = bookService.findByIsbn(isbn);
+        bookService.delete(book);
+        return "redirect:/admin/books/all?deleted=true";
     }
 
 
