@@ -141,6 +141,15 @@ public class BookLoanServiceImpl implements BookLoanService {
     ) {
         return bookLoanRepository.findByBorrowedAtBetween(startDate, endDate, pageable);
     }
+
+    @Override
+    public List<BookLoan> getAllLoans(
+            @RequestParam("startDate") Date startDate,
+            @RequestParam("endDate") Date endDate)
+    {
+        return bookLoanRepository.findByBorrowedAtBetween(startDate, endDate);
+    }
+
     public Map<String, Long> getBookLoansGroupedByMonth() {
         List<BookLoan> bookLoans = bookLoanRepository.findAll();
 

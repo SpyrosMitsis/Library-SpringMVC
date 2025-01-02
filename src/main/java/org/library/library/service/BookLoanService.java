@@ -34,6 +34,11 @@ public interface BookLoanService {
             @RequestParam("startDate") Date startDate,
             @RequestParam("endDate") Date endDate
     );
+
+    List<BookLoan> getAllLoans(
+            @RequestParam("startDate") Date startDate,
+            @RequestParam("endDate") Date endDate
+    );
     Map<String, Long> getBookLoansGroupedByMonth();
     List<BookLoanSummaryDto> getTopNMostLoanedBooks(LoanStatus loanStatus, int n, LocalDateTime startDateTime, LocalDateTime endDateTime);
     List<BookLoanSummaryDto> getTopNMostLoanedBooks(LoanStatus loanStatus, int n);

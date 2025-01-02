@@ -10,6 +10,7 @@ import org.library.library.service.AppUserService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Set;
 
 @Service
@@ -50,5 +51,10 @@ public class AppUserServiceImpl implements AppUserService {
     @Override
     public long countAllUsers() {
         return appUserRepository.count();
+    }
+
+    @Override
+    public List<AppUser> getAllUsers() {
+        return appUserRepository.findAll();
     }
 }

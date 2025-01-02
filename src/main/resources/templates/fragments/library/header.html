@@ -55,12 +55,13 @@
         </div>
       </div>
       <div class="col-lg-6">
-        <nav class="header__menu">
+        <nav class="header__menu" style="width: 2000px">
           <ul>
             <li class="active"><a th:href="@{/home}">Home</a></li>
             <li><a th:href="@{/books}">Books</a></li>
             <li><a th:href="@{/loans/my}">My Loans</a></li>
-            <li><a href="./contact.html">Contact</a></li>
+            <li><a th:href="@{/admin/dashboard}" sec:authorize="hasRole('ROLE_ADMIN')">Admin Page</a></li>
+            <li><a th:href="@{/loans/librarian/admin}" sec:authorize="hasAnyRole('ROLE_ADMIN', 'ROLE_LIBRARIAN')">RETURN BOOKS</a></li>
           </ul>
         </nav>
       </div>

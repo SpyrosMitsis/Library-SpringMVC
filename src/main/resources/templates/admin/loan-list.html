@@ -37,6 +37,7 @@
           </div>
           <button type="submit" class="btn btn-primary btn-sm">Filter</button>
           <a th:href="@{/admin/loans/all}" class="btn btn-secondary btn-sm ml-2">Reset</a>
+          <a th:href="@{/admin/loans/statistics(startDate=${param.startDate},endDate=${param.endDate})}" class="btn btn-secondary btn-sm ml-2">Download</a>
         </form>
       </div>
       <div class="col-md-4">
