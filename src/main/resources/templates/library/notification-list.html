@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:style="http://www.w3.org/1999/xhtml"
+      layout:decorate="~{layout/library-main}">
+<head>
+    <title>Register</title>
+</head>
+<div layout:fragment="content">
+    <table class="table ">
+        <thead>
+        <tr>
+            <th>#</th>
+            <th>Message</th>
+            <th>Created At</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="notification : ${notifications}"
+            th:class="${notification.read} ? 'read' : 'unread'">
+            <td th:text="${notificationStat.count}"></td>
+            <td th:text="${notification.message}"></td>
+            <td th:text="${#dates.format(notification.createdAt, 'dd-MM-yyyy')}"></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</html>
+

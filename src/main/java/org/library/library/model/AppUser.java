@@ -33,11 +33,9 @@ public class AppUser {
             joinColumns = @JoinColumn(name = "username"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
 
-    @JsonManagedReference
+    @JsonBackReference
     private Set<Role> roles = new HashSet<>();
     @OneToMany(mappedBy = "user")
     @JsonManagedReference
     private Set<Rating> ratings = new HashSet<>();
-
-
 }

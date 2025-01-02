@@ -4,17 +4,6 @@
       layout:decorate="~{layout/admin-main}">
 <head>
   <title>Notification List</title>
-  <style>
-    .read {
-      background-color: #f0f0f0;
-      color: #6c757d;
-    }
-
-    .unread {
-      background-color: #ffffff;
-      color: #000000;
-    }
-  </style>
 </head>
 <body>
 <div layout:fragment="content">
@@ -38,11 +27,6 @@
       </table>
   </div>
 </div>
-
-<th:block layout:fragment="script">
-  <script th:src="@{/admin/assets/js/add-author.js}"></script>
-  <script th:src="@{/admin/assets/js/add-category.js}"></script>
-</th:block>
 
 </body>
 </html>

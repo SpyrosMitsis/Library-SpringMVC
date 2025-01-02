@@ -1,5 +1,6 @@
 package org.library.library.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
@@ -19,6 +20,6 @@ public class Role {
     @ManyToMany(mappedBy = "roles")
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
-    @JsonManagedReference
+    @JsonBackReference
     private Set<AppUser> users = new HashSet<>();
 }

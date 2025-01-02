@@ -1,5 +1,5 @@
 <html th:fragment="header"
-    xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
       lang="en">
 <header class="header">
   <div class="header__top">
@@ -22,8 +22,25 @@
 
               <!-- Show username when user is authenticated -->
               <span sec:authorize="isAuthenticated()">
-        Hello, <span th:text="${#authentication.name}"></span>!
-    </span>
+                Hello, <span th:text="${#authentication.name}"></span>!
+              </span>
+
+              <!-- Notification dropdown -->
+              <div class="dropdown d-inline-block ms-3" sec:authorize="isAuthenticated()">
+                <button class="btn btn-secondary dropdown-toggle position-relative" type="button" id="notificationDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                  <i class="fa fa-bell"></i>
+                  <!-- Notification chip -->
+                  <span class="notification-chip" id="notification-count"></span>
+                </button>
+                <div class="dropdown-menu dropdown-menu-end" aria-labelledby="notificationDropdown">
+                  <h6 class="dropdown-header" id="notification-header">Notifications</h6>
+                  <div id="notification-list">
+                    <!-- Notifications will be dynamically inserted here -->
+                  </div>
+                  <div class="dropdown-divider"></div>
+                  <a class="dropdown-item" th:href="@{/notifications/library/all}">View all notifications</a>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -47,20 +64,100 @@
           </ul>
         </nav>
       </div>
-      <div class="col-lg-3">
-        <div class="header__cart">
-          <ul>
-            <li><a href="#"><i class="fa fa-heart"></i> <span>1</span></a></li>
-            <li><a href="#"><i class="fa fa-shopping-bag"></i> <span>3</span></a></li>
-          </ul>
-          <div class="header__cart__price">item: <span>$150.00</span></div>
-        </div>
-      </div>
-    </div>
-    <div class="humberger__open">
-      <i class="fa fa-bars"></i>
-    </div>
   </div>
 </header>
 <!-- Header Section End -->
+
+<script th:inline="javascript">
+  function fetchNotifications() {
+    const notificationList = document.getElementById('notification-list');
+    const notificationCount = document.getElementById('notification-count');
+    const notificationHeader = document.getElementById('notification-header');
+
+    // Clear the existing notifications
+    notificationList.innerHTML = '';
+    notificationCount.innerHTML = '';
+
+    fetch('notifications/send-due-date-reminder')
+            .then(response => response.json())
+            .then(data => {
+              if (data.length > 0) {
+                notificationCount.textContent = data.length;
+                notificationHeader.textContent = `You have ${data.length} new notifications`;
+
+                data.forEach(notification => {
+                  console.log(notification);
+                  const notificationClass = notification.message.startsWith('OVERDUE:') ? 'overdue' : 'warning';
+                  const notificationHtml = `
+                    <div class="dropdown-item preview-item py-3 ${notificationClass}" id="notification-${notification.id}">
+                        <div class="preview-thumbnail">
+                            <i class="mdi mdi-alert m-auto text-primary"></i>
+                        </div>
+                        <div class="preview-item-content">
+                            <h6 class="preview-subject fw-normal text-dark mb-1">${notification.message}</h6>
+                            <p class="fw-light small-text mb-0">${new Date(notification.createdAt).toLocaleString()}</p>
+                            <button class="btn btn-sm btn-link mark-as-read" data-notification-id="${notification.id}">Mark as Read</button>
+                        </div>
+                    </div>
+                `;
+                  notificationList.insertAdjacentHTML('beforeend', notificationHtml);
+                });
+
+                // Attach onclick to all 'Mark as Read' buttons
+                document.querySelectorAll('.mark-as-read').forEach(button => {
+                  button.addEventListener('click', event => {
+                    const notificationId = event.target.dataset.notificationId;
+                    markNotificationAsRead(notificationId);
+                  });
+                });
+              } else {
+                notificationHeader.textContent = 'No new notifications';
+              }
+            })
+            .catch(error => {
+              console.error('Error fetching notifications:', error);
+              notificationHeader.textContent = 'Error loading notifications';
+            });
+  }
+
+  function markNotificationAsRead(notificationId) {
+    fetch(`/notifications/mark-as-read?notificationId=${notificationId}`, {
+      method: 'PATCH'
+    })
+            .then(response => {
+              if (response.ok) {
+                console.log(`Notification ${notificationId} marked as read`);
+                // Optionally remove the notification from the list
+                const notificationElement = document.getElementById(`notification-${notificationId}`);
+                if (notificationElement) {
+                  notificationElement.remove();
+                }
+
+                // Update the notification count
+                const notificationCount = document.getElementById('notification-count');
+                const currentCount = parseInt(notificationCount.textContent) || 0;
+                notificationCount.textContent = Math.max(0, currentCount - 1);
+
+                const notificationHeader = document.getElementById('notification-header');
+                if (currentCount - 1 === 0) {
+                  notificationHeader.textContent = 'No new notifications';
+                }
+              } else {
+                console.error(`Failed to mark notification ${notificationId} as read`);
+              }
+            })
+            .catch(error => console.error('Error marking notification as read:', error));
+  }
+
+  document.addEventListener('DOMContentLoaded', function() {
+    const notificationDropdown = document.getElementById('notificationDropdown');
+    if (notificationDropdown) {
+      notificationDropdown.addEventListener('click', fetchNotifications);
+    }
+
+    // Initial fetch
+    fetchNotifications();
+  });
+</script>
+
 </html>

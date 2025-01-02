@@ -33,11 +33,20 @@ public class NotificationController {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/all")
-    public ModelAndView getAllNotifications() {
+    @GetMapping("/admin/all")
+    public ModelAndView getAllNotificationsAdmin() {
         List<Notification> notifications = notificationService.getAllNotificationsByUser(appUserService.getAuthenticatedUser());
 
         ModelAndView modelAndView = new ModelAndView("admin/notification-list");
+        modelAndView.addObject("notifications", notifications);
+
+        return modelAndView;
+    }
+    @GetMapping("/library/all")
+    public ModelAndView getAllNotificationsLibrary() {
+        List<Notification> notifications = notificationService.getAllNotificationsByUser(appUserService.getAuthenticatedUser());
+
+        ModelAndView modelAndView = new ModelAndView("library/notification-list");
         modelAndView.addObject("notifications", notifications);
 
         return modelAndView;
