@@ -46,4 +46,9 @@ public class InventoryController {
         inventoryService.adjustQuantity(isbn, adjustmentDTO);
         return "redirect:/admin/inventory/" + isbn + "?success=true";
     }
+    @PostMapping("/delete/{isbn}")
+    public String deleteInventory(@PathVariable Long isbn) {
+        inventoryService.deleteInventory(isbn);
+        return "redirect:/admin/inventory/list";
+    }
 }

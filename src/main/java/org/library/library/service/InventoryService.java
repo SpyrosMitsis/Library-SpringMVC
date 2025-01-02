@@ -11,4 +11,6 @@ public interface InventoryService {
     Page<BookInventory> getInventories(PageRequest pageRequest);
     BookInventory getInventory(String isbn);
     BookInventory adjustQuantity(String isbn, QuantityAdjustmentDto quantityAdjustmentDto);
+
+    void deleteInventory(Long id);
 }

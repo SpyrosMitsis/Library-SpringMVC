@@ -44,4 +44,8 @@ public class InventoryServiceImpl implements InventoryService {
         return bookInventoryRepository.save(bookInventory);
 
     }
+    @Override
+    public void deleteInventory(Long id) {
+        bookInventoryRepository.deleteById(id);
+    }
 }
