@@ -11,7 +11,7 @@
                 <div class="hero__search__form">
                     <form th:action="@{/books}" method="get">
                         <input type="text" name="query" class="form-control"
-                               placeholder="Search Books By Title"
+                               placeholder="Search Books By Title or Isbn..."
                                th:value="${param.query}" />
                         <button type="submit" class="site-btn">SEARCH</button>
                     </form>

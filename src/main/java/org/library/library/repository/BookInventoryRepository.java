@@ -1,7 +1,5 @@
 package org.library.library.repository;
 
-import org.library.library.dto.BookListDto;
-import org.library.library.model.Book;
 import org.library.library.model.BookInventory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -14,6 +12,6 @@ import java.util.List;
 @Repository
 public interface BookInventoryRepository extends JpaRepository<BookInventory, Long> {
     List<BookInventory> findByBookIsbn(String isbn);
-    Page<BookInventory> findByBookCategoriesId(Long categoryId, PageRequest pageRequest);
-    Page<BookInventory> findByBookTitleContaining(String title, Pageable pageable);
+    Page<BookInventory> findByBookCategoriesIn(List<Long> categoryIds, PageRequest pageRequest);
+    Page<BookInventory> findByBookTitleContainingOrBookIsbnContaining(String title, String isbn, Pageable pageable);
 }

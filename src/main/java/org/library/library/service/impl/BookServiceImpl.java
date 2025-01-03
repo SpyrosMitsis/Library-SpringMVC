@@ -1,6 +1,5 @@
 package org.library.library.service.impl;
 
-import org.library.library.dto.BookDto;
 import org.library.library.dto.BookListDto;
 import org.library.library.dto.BookLoanSummaryDto;
 import org.library.library.mapper.BookInventoryMapper;
@@ -103,14 +102,14 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public Page<BookListDto> findByCategoryIdPaginated(Long categoryId, PageRequest pageRequest) {
-        Page<BookInventory> bookPage = bookInventoryRepository.findByBookCategoriesId(categoryId, pageRequest);
+    public Page<BookListDto> findByCategoryIdsPaginated(List<Long> categoryIds, PageRequest pageRequest) {
+        Page<BookInventory> bookPage = bookInventoryRepository.findByBookCategoriesIn(categoryIds, pageRequest);
         return bookPage.map(BookInventoryMapper::mapToBookListDto);
     }
 
     @Override
-    public Page<BookListDto> findByTitleContainingPaginated(String title, PageRequest pageRequest) {
-        Page<BookInventory> bookPage = bookInventoryRepository.findByBookTitleContaining(title, pageRequest);
+    public Page<BookListDto> findByTitleOrIsbnContainingPaginated(String title, String isbn, PageRequest pageRequest) {
+        Page<BookInventory> bookPage = bookInventoryRepository.findByBookTitleContainingOrBookIsbnContaining(title, isbn, pageRequest);
         return bookPage.map(BookInventoryMapper::mapToBookListDto);
     }
 

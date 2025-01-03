@@ -1,6 +1,5 @@
 package org.library.library.controller;
 import org.library.library.dto.*;
-import org.library.library.mapper.AuthorMapper;
 import org.library.library.mapper.BookMapper;
 import org.library.library.model.*;
 import org.library.library.service.*;
@@ -40,28 +39,32 @@ public class BookController {
     @GetMapping("/books")
     public String listBooks(@RequestParam(defaultValue = "1") int page,
                             @RequestParam(defaultValue = "9") int size,
-                            @RequestParam(required = false) Long categoryId,
+                            @RequestParam(value = "categoryId", required = false) List<Long> categoryIdList,
                             @RequestParam(required = false) String query,
                             Model model) {
         PageRequest pageRequest = PageRequest.of(page - 1, size);
         Page<BookListDto> books = bookService.findAllPaginated(pageRequest);
+        List<Category> allCategories = categoryService.findAll().stream().toList();
 
-        System.out.println("----------------------");
-        System.out.println( books.getContent());
-        System.out.println("----------------------");
-
-        if (categoryId != null) {
-            books = bookService.findByCategoryIdPaginated(categoryId, pageRequest);
-            Category category = categoryService.findById(categoryId);
-            model.addAttribute("category", category);
+        System.out.println(categoryIdList);
+        if (categoryIdList != null && !categoryIdList.isEmpty()) {
+            books = bookService.findByCategoryIdsPaginated(categoryIdList, pageRequest);
+            List<String> categories = categoryIdList.stream()
+                    .map(categoryService::findById)
+                    .map(Category::getName)
+                    .collect(Collectors.toList());
+            model.addAttribute("selectedCategories", categories);
+            System.out.println(categories);
         }
+
         if (query != null) {
-            books = bookService.findByTitleContainingPaginated(query, pageRequest);
+            books = bookService.findByTitleOrIsbnContainingPaginated(query, query, pageRequest);
         }
 
         model.addAttribute("books", books);
         model.addAttribute("currentPage", page);
         model.addAttribute("size", size);
+        model.addAttribute("categories", allCategories);
         model.addAttribute("totalPages", books.getTotalPages());
         model.addAttribute("totalItems", books.getTotalElements());
 

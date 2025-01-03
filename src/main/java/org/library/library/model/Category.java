@@ -1,10 +1,8 @@
 package org.library.library.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -20,5 +18,6 @@ public class Category {
     private Long id;
     private String name;
     @ManyToMany(mappedBy = "categories")
+    @ToString.Exclude
     private Set<Book> books = new HashSet<>();
 }

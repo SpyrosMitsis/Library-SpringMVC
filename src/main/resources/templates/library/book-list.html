@@ -30,13 +30,31 @@
                 </div>
               </div>
             </div>
-            <!-- Other sidebar items can be added here if needed -->
+
+            <!-- Categories Filter -->
+            <div class="sidebar__item">
+              <h4>Categories</h4>
+              <form th:action="@{/books}" method="get">
+                <ul>
+                  <li th:each="category : ${categories}">
+                    <label>
+                      <input type="checkbox" name="categoryId" th:value="${category.id}"
+                             th:checked="${param.categoryId != null && param.categoryId.contains(category.id)}">
+                      <span th:text="${category.name}"></span>
+                    </label>
+                  </li>
+                </ul>
+                <button type="submit" class="btn btn-primary mt-2">Filter</button>
+              </form>
+            </div>
           </div>
         </div>
         <div class="col-lg-9 col-md-7">
 
           <div th:if="${param.categoryId != null}">
-            <h1 th:text="${'Category: ' + category.name}"></h2>
+            <h1>Selected Categories:</h1>
+            <ul>
+              <h2 th:each="category : ${selectedCategories}" th:text="${category}"></h2>
           </div>
           <div th:if="${param.categoryId == null}">
             <h1>All Books</h1>
