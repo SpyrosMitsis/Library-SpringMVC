@@ -54,8 +54,8 @@
           <a href="./index.html"><img th:src="@{library/imglogo.png}" alt=""></a>
         </div>
       </div>
-      <div class="col-lg-6">
-        <nav class="header__menu" style="width: 2000px">
+      <div class="col-lg-6 d-flex justify-content-center"> <!-- Added flex and centering classes -->
+        <nav class="header__menu">
           <ul>
             <li class="active"><a th:href="@{/home}">Home</a></li>
             <li><a th:href="@{/books}">Books</a></li>
@@ -65,7 +65,9 @@
           </ul>
         </nav>
       </div>
+    </div>
   </div>
+
 </header>
 <!-- Header Section End -->
 

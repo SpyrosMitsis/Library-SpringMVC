@@ -51,3 +51,41 @@
 tr:hover .action-button {
     display: inline-block;
 }
+
+.header__menu {
+    padding: 24px 0;
+    width: 100%; /* Ensure the menu takes the full width of its container */
+}
+
+.header__menu ul {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center; /* Centers the list items horizontally */
+    list-style: none;
+}
+
+.header__menu ul li {
+    margin-right: 50px;
+    position: relative;
+    white-space: nowrap;
+}
+
+.header__menu ul li:last-child {
+    margin-right: 0; /* Removes right margin from last item */
+}
+
+
+
+
+
+.hero__search__form {
+    width: 100%;
+}
+
+.hero__search__form input {
+}
+
+.site-btn {
+    padding: 10px 20px; /* Adjust button size */
+}
