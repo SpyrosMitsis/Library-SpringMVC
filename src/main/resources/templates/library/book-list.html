@@ -13,11 +13,10 @@
       <div class="row">
         <div class="col-lg-3 col-md-5">
           <div class="sidebar">
-
             <!-- Categories Filter -->
             <div class="sidebar__item">
               <h4>Categories</h4>
-              <form th:action="@{/books}" method="get">
+              <form th:action="@{/books}" method="get" class="filter-form">
                 <ul>
                   <li th:each="category : ${categories}">
                     <label>
@@ -26,27 +25,23 @@
                       <span th:text="${category.name}"></span>
                     </label>
                   </li>
+                  <li>
+                    <h4>Rating Filter</h4>
+                    <select id="rating-filter" name="rating" class="form-check">
+                      <option value="">All Ratings</option>
+                      <option value="5">5 stars</option>
+                      <option value="4">4 stars & up</option>
+                      <option value="3">3 stars & up</option>
+                      <option value="2">2 stars & up</option>
+                      <option value="1">1 star & up</option>
+                    </select>
+                  </li>
                 </ul>
-                <button type="submit" class="btn btn-primary mt-2">Filter</button>
+                <button type="submit" class="btn btn-primary">Filter</button>
               </form>
             </div>
           </div>
-
-
-          <div class="sidebar__item">
-            <h4>Rating Filter</h4>
-            <select id="rating-filter" name="rating">
-              <option value="">All Ratings</option>
-              <option value="5">5 stars</option>
-              <option value="4">4 stars & up</option>
-              <option value="3">3 stars & up</option>
-              <option value="2">2 stars & up</option>
-              <option value="1">1 star & up</option>
-            </select>
           </div>
-
-        </div>
-        <!-- end of sidebar -->
 
         <div class="col-lg-9 col-md-7">
 
