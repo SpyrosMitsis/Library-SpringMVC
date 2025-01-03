@@ -17,4 +17,5 @@ public class BookListDto {
     private Date releaseDate;
     private Boolean isAvailable;
     private Set<AuthorDto> authors = new HashSet<>();
+    private double rating;
 }

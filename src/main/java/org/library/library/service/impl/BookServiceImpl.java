@@ -1,14 +1,13 @@
 package org.library.library.service.impl;
 
+import org.library.library.dto.AuthorDto;
 import org.library.library.dto.BookListDto;
 import org.library.library.dto.BookLoanSummaryDto;
 import org.library.library.mapper.BookInventoryMapper;
 import org.library.library.mapper.BookMapper;
+import org.library.library.mapper.SqlToBookListDtoMapper;
 import org.library.library.model.*;
-import org.library.library.repository.AppUserRepository;
-import org.library.library.repository.BookInventoryRepository;
-import org.library.library.repository.BookRepository;
-import org.library.library.repository.BookSelectionRepository;
+import org.library.library.repository.*;
 import org.library.library.security.SecurityUtil;
 import org.library.library.service.BookLoanService;
 import org.library.library.service.BookService;
@@ -16,7 +15,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
 import static org.library.library.mapper.BookMapper.mapToBookListDto;
@@ -29,13 +32,15 @@ public class BookServiceImpl implements BookService {
     private final BookInventoryRepository bookInventoryRepository;
     private final BookLoanService bookLoanService;
     private final BookSelectionRepository bookSelectionRepository;
+    private final RatingRepository ratingRepository;
 
-    public BookServiceImpl(BookRepository bookRepository, AppUserRepository appUserRepository, BookInventoryRepository bookInventoryRepository, BookLoanService bookLoanService, BookSelectionRepository bookSelectionRepository) {
+    public BookServiceImpl(BookRepository bookRepository, AppUserRepository appUserRepository, BookInventoryRepository bookInventoryRepository, BookLoanService bookLoanService, BookSelectionRepository bookSelectionRepository, RatingRepository ratingRepository) {
         this.bookRepository = bookRepository;
         this.appUserRepository = appUserRepository;
         this.bookInventoryRepository = bookInventoryRepository;
         this.bookLoanService = bookLoanService;
         this.bookSelectionRepository = bookSelectionRepository;
+        this.ratingRepository = ratingRepository;
     }
 
     @Override
@@ -95,9 +100,13 @@ public class BookServiceImpl implements BookService {
         Page<BookInventory> booksInvetory = bookInventoryRepository.findAll(pageRequest);
 
         Page<BookListDto> books = booksInvetory.map(BookInventoryMapper::mapToBookListDto);
+        books.getContent().forEach(book -> {
+            Float averageRating = ratingRepository.findAverageRatingByBookIsbn(book.getIsbn());
+            book.setRating(averageRating != null ? averageRating : 0.0f);
+
+        });
 
         return books;
-
 
     }
 
@@ -128,4 +137,20 @@ public class BookServiceImpl implements BookService {
         List<Book> books = bookSelection.stream().map(BookSelection::getBook).toList();
         return books.stream().map(BookMapper::mapToBookListDto).toList();
     }
+    @Override
+    public Page<BookListDto> findByRatingAndCategoriesPaginated(Float rating, List<Long> categoryIds, PageRequest pageRequest) {
+        Page<BookListDto> bookPage = bookInventoryRepository.findBooksByRatingsAndCategories(rating,categoryIds, pageRequest)
+                .map(SqlToBookListDtoMapper::mapToBookListDto);
+
+        return bookPage;
+    }
+
+    @Override
+    public Page<BookListDto> findByRatingPaginated(Float minRating, PageRequest pageRequest) {
+        Page<BookListDto> bookPage = bookInventoryRepository.findBooksByRatings(minRating, pageRequest)
+                .map(SqlToBookListDtoMapper::mapToBookListDto);
+
+        return bookPage;
+    }
 }
+

@@ -1,5 +1,6 @@
 package org.library.library.repository;
 
+import org.library.library.dto.BookListDto;
 import org.library.library.dto.RatingSummaryDto;
 import org.library.library.model.Rating;
 import org.springframework.data.domain.Pageable;
@@ -14,7 +15,7 @@ public interface RatingRepository  extends JpaRepository<Rating, Long> {
     List<Rating> findByBookIsbn(String isbn);
 
     @Query("SELECT AVG(r.score) FROM Rating r WHERE r.book.isbn = :isbn")
-    float findAverageRatingByBookIsbn(String isbn);
+    Float findAverageRatingByBookIsbn(String isbn);
 
 
 

@@ -22,4 +22,8 @@ public interface BookService {
     List<BookListDto> getTopNMostLoanedBooks();
 
     List<BookListDto> getBookSelection();
+
+    Page<BookListDto> findByRatingAndCategoriesPaginated(Float rating, List<Long> categoryIds, PageRequest pageRequest);
+
+    Page<BookListDto> findByRatingPaginated(Float rating, PageRequest pageRequest);
 }

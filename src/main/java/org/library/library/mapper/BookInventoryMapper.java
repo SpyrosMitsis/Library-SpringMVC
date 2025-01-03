@@ -1,8 +1,10 @@
 package org.library.library.mapper;
 
 import org.library.library.dto.BookListDto;
+import org.library.library.dto.RatingDto;
 import org.library.library.model.Book;
 import org.library.library.model.BookInventory;
+import org.library.library.model.Rating;
 
 import java.util.stream.Collectors;
 

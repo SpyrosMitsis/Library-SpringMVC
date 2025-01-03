@@ -34,37 +34,40 @@ public class BookController {
         this.ratingService = ratingService;
     }
 
-
-
     @GetMapping("/books")
     public String listBooks(@RequestParam(defaultValue = "1") int page,
                             @RequestParam(defaultValue = "9") int size,
                             @RequestParam(value = "categoryId", required = false) List<Long> categoryIdList,
+                            @RequestParam(required = false) Float rating,
                             @RequestParam(required = false) String query,
                             Model model) {
         PageRequest pageRequest = PageRequest.of(page - 1, size);
-        Page<BookListDto> books = bookService.findAllPaginated(pageRequest);
-        List<Category> allCategories = categoryService.findAll().stream().toList();
+        Page<BookListDto> books;
 
-        System.out.println(categoryIdList);
         if (categoryIdList != null && !categoryIdList.isEmpty()) {
-            books = bookService.findByCategoryIdsPaginated(categoryIdList, pageRequest);
+            if (rating != null) {
+                books = bookService.findByRatingAndCategoriesPaginated(rating, categoryIdList, pageRequest);
+            } else {
+                books = bookService.findByCategoryIdsPaginated(categoryIdList, pageRequest);
+            }
+
             List<String> categories = categoryIdList.stream()
                     .map(categoryService::findById)
                     .map(Category::getName)
                     .collect(Collectors.toList());
             model.addAttribute("selectedCategories", categories);
-            System.out.println(categories);
-        }
-
-        if (query != null) {
+        } else if (rating != null) {
+            books = bookService.findByRatingPaginated(rating, pageRequest);
+        } else if (query != null) {
             books = bookService.findByTitleOrIsbnContainingPaginated(query, query, pageRequest);
+        } else {
+            books = bookService.findAllPaginated(pageRequest);
         }
 
         model.addAttribute("books", books);
         model.addAttribute("currentPage", page);
         model.addAttribute("size", size);
-        model.addAttribute("categories", allCategories);
+        model.addAttribute("categories", categoryService.findAll());
         model.addAttribute("totalPages", books.getTotalPages());
         model.addAttribute("totalItems", books.getTotalElements());
 
