@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/library-main}">
+<body>
+<main layout:fragment="content">
+    <div class="content-wrapper">
+        <h1>Authors List</h1>
+
+        <table class="table table-hover">
+            <thead>
+            <tr>
+                <th>#</th>
+                <th>Name</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="category, iterStat : ${categories}"
+                class="clickable-row"
+                th:onclick="'window.location.href=\'' + @{/books?categoryId={id}(id=${category.id})} + '\''"
+                style="cursor: pointer">
+                <td th:text="${iterStat.count}"></td>
+                <td th:text="${category.name}"></td>
+            </tr>
+        </table>
+    </div>
+</main>
+</body>
+</html>

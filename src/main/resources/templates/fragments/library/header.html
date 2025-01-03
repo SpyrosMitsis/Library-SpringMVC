@@ -60,6 +60,7 @@
             <li class="active"><a th:href="@{/home}">Home</a></li>
             <li><a th:href="@{/books}">Books</a></li>
             <li><a th:href="@{/loans/my}">My Loans</a></li>
+            <li><a th:href="@{/categories}">Browse Categories</a></li>
             <li><a th:href="@{/admin/dashboard}" sec:authorize="hasRole('ROLE_ADMIN')">Admin Page</a></li>
             <li><a th:href="@{/librarian/getAllUsers}" sec:authorize="hasAnyRole('ROLE_ADMIN', 'ROLE_LIBRARIAN')">RETURN BOOKS</a></li>
           </ul>

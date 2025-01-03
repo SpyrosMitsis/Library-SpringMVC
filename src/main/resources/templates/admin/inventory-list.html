@@ -35,7 +35,6 @@
                 <tr th:each="inventory : ${inventories}"
                     class="clickable-row"
                     th:onclick="'window.location.href=\'' + @{/admin/inventory/{isbn}(isbn=${#strings.escapeJavaScript(inventory.book.isbn)})} + '\''"
-
                     style="cursor: pointer">
                     <td th:text="${inventory.id}"></td>
                     <td th:text="${inventory.book.isbn}"></td>
