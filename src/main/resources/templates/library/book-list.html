@@ -49,6 +49,7 @@
             <h1>Selected Categories:</h1>
             <ul>
               <h2 th:each="category : ${selectedCategories}" th:text="${category}"></h2>
+            </ul>
           </div>
           <div th:if="${param.categoryId == null}">
             <h1>All Books</h1>
