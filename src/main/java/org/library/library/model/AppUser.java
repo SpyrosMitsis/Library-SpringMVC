@@ -4,10 +4,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.HashSet;
@@ -34,8 +31,11 @@ public class AppUser {
             inverseJoinColumns = @JoinColumn(name = "role_id"))
 
     @JsonBackReference
+    @JsonIgnore
     private Set<Role> roles = new HashSet<>();
     @OneToMany(mappedBy = "user")
     @JsonManagedReference
+    @JsonIgnore
     private Set<Rating> ratings = new HashSet<>();
+
 }
