@@ -5,7 +5,7 @@
 <body>
 <main layout:fragment="content">
     <div class="content-wrapper">
-        <h1>User Loans</h1>
+        <h1 th:text="${username + ' Loans'}"></h1>
 
 
         <div th:if="${param.returned}" class="alert alert-success">
