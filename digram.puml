@@ -1,0 +1,663 @@
+@startuml
+class org.library.library.controller.RatingController {
+- RatingService ratingService
+- BookService bookService
++ String rateBook(RatingDto,String,float)
++ String showRatingForm(String,Model)
+}
+
+
+class org.library.library.model.Role {
+- Long id
+- String name
+- Set<AppUser> users
+}
+
+class org.library.library.service.impl.AppUserServiceImpl {
+- AppUserRepository appUserRepository
+- RoleRepository roleRepository
+- PasswordEncoder passwordEncoder
++ void saveUser(RegistrationDto)
++ AppUser getAuthenticatedUser()
++ AppUser findByUsername(String)
++ long countAllUsers()
++ Page<AppUser> getAllUsersPaginated(PageRequest)
++ Page<AppUser> getAllUsersByUsernamePaginated(String,PageRequest)
+}
+
+
+class org.library.library.controller.AppUserController {
+- AppUserService appUserService
++ String getAllUsers(Model,String,int,int)
++ String getUsers(String,Model,int,int)
++ String searchUsers(String,Model,int,int)
+}
+
+
+interface org.library.library.service.NotificationService {
+~ void createNotification(AppUser,String)
+~ void updateOverdueLoans()
+~ void checkLoanDueDates()
+~ List<Notification> getUnreadNotifications()
+~ void markAsRead(Long)
+~ List<Notification> getAllNotificationsByUser(AppUser)
+}
+
+interface org.library.library.service.RatingService {
+~ void save(Rating)
+~ void delete(Rating)
+~ Rating findById(Long)
+~ List<RatingDto> findByBookIsbn(String)
+~ List<RatingDto> findByUserUsername(String)
+~ float getAverageRating(String)
+~ void rateBook(RatingDto)
+~ List<BookListDto> getHighestRatedBooks()
+}
+
+class org.library.library.controller.AuthorController {
+- AuthorService authorService
+- BookService bookService
++ String getAllAuthors(Model)
++ String getAuthorById(Long,Model)
++ String showAddAuthorForm(Model)
++ String addAuthor(NewAuthorDto)
+}
+
+
+class org.library.library.dto.NewCategoryDto {
+- String name
+}
+
+interface org.library.library.service.InventoryService {
+~ Page<BookInventory> getInventories(PageRequest)
+~ BookInventory getInventory(String)
+~ BookInventory adjustQuantity(String,QuantityAdjustmentDto)
+~ void deleteInventory(Long)
+}
+
+class org.library.library.dto.RegistrationDto {
+- String username
+- String password
+- String confirmPassword
+- String firstName
+- String lastName
+}
+
+class org.library.library.model.BookLoan {
+- Long id
+- Book book
+- AppUser borrower
+- Date borrowedAt
+- Date dueDate
+- Date returnedAt
+- LoanStatus status
+}
+
+class org.library.library.dto.BookDto {
+- String isbn
+- String title
+- String description
+- String coverUrl
+- Date releaseDate
+- Boolean isAvailable
+- Integer totalQuantity
+- List<Long> authorIds
+- List<Long> categoryIds
+- List<NewAuthorDto> newAuthors
+- List<NewCategoryDto> newCategories
+- AppUser createdBy
+}
+
+class org.library.library.service.impl.RatingServiceImpl {
+- RatingRepository ratingRepository
+- AppUserService appUserService
+- BookService bookService
++ void save(Rating)
++ void delete(Rating)
++ Rating findById(Long)
++ List<RatingDto> findByBookIsbn(String)
++ List<RatingDto> findByUserUsername(String)
++ float getAverageRating(String)
++ void rateBook(RatingDto)
++ List<BookListDto> getHighestRatedBooks()
+}
+
+
+interface org.library.library.repository.BookInventoryRepository {
+~ List<BookInventory> findByBookIsbn(String)
+~ Page<BookInventory> findByBookCategoriesIn(List<Long>,PageRequest)
+~ Page<BookInventory> findByBookTitleContainingOrBookIsbnContaining(String,String,Pageable)
+~ Page<Object[]> findBooksByRatingsAndCategories(Float,List<Long>,PageRequest)
+~ Page<Object[]> findBooksByRatings(Float,PageRequest)
+}
+
+interface org.library.library.service.CsvExportService {
+~ byte[] ExportStatisticsToCsv(List<BookLoan>)
+}
+
+class org.library.library.service.impl.BookLoanServiceImpl {
+- BookLoanRepository bookLoanRepository
+- BookInventoryRepository bookInventoryRepository
+- AppUserRepository appUserRepository
++ BookLoan borrowBook(String)
++ boolean hasOverdueBooks(AppUser)
++ BookLoan returnBook(Long)
++ List<BookLoan> getActiveLoans()
++ Page<BookLoan> getPersonalLoansByStatusPaginated(String,PageRequest)
++ List<BookLoan> getPersonalLoansByStatus(String)
++ Page<BookLoan> getAllPersonalLoansPaginated(PageRequest)
++ Page<BookLoan> getAllLoansPaginated(Pageable,Date,Date)
++ List<BookLoan> getAllLoans(Date,Date)
++ Map<String,Long> getBookLoansGroupedByMonth()
++ List<BookLoanSummaryDto> getTopNMostLoanedBooks(LoanStatus,int,LocalDateTime,LocalDateTime)
++ List<BookLoanSummaryDto> getTopNMostLoanedBooks(LoanStatus,int)
++ List<CategoryLoanSummaryDto> findCategoryLoanSummary(Date,Date)
++ List<CategoryLoanSummaryDto> findCategoryLoanSummary()
++ BookLoanDto getBookLoanByBookAndBorrower(Book,AppUser)
++ Page<BookLoan> findBooksByBookStartingWithTitlePaginated(String,PageRequest)
++ Page<BookLoan> findBooksByBorrowerAndStatusIn(AppUser,List<LoanStatus>,PageRequest)
+}
+
+
+class org.library.library.dto.QuantityAdjustmentDto {
+- Integer quantity
+- AdjustmentType type
+}
+
+enum org.library.library.dto.AdjustmentType {
++  INCREASE
++  DECREASE
++  SET
+- String displayName
+}
+
+class org.library.library.security.SecurityUtil {
++ {static} String getCurrentUsername()
+}
+
+class org.library.library.dto.AuthorDto {
+- Long id
+- String firstName
+- String lastName
+}
+
+class org.library.library.mapper.BookMapper {
++ {static} BookListDto mapToBookListDto(Book)
++ {static} Book mapBookDtoToBook(BookDto)
++ {static} BookDto mapToBookDto(Book)
+}
+
+interface org.library.library.repository.AppUserRepository {
+~ AppUser findByUsername(String)
+~ Page<AppUser> findAppUsersByUsernameContaining(String,Pageable)
+}
+
+class org.library.library.dto.CategoryLoanSummaryDto {
+- Long categoryId
+- String categoryName
+- Long loanCount
+}
+
+class org.library.library.mapper.BookInventoryMapper {
++ {static} BookListDto mapToBookListDto(BookInventory)
+}
+
+class org.library.library.controller.DashboardController {
+- BookLoanService loanService
+- AppUserService appUserService
+- NotificationService notificationService
++ String redirectRootToDashboard()
++ String index(Model)
++ Map<String,Long> getBookLoanStats()
++ String allLoans(Model,Integer,Integer,String,String)
+}
+
+
+class org.library.library.controller.AuthController {
+- AppUserService appUserService
++ String getRegisterForm(Model)
++ String register(RegistrationDto,BindingResult,Model)
++ String login()
+}
+
+
+interface org.library.library.repository.BookLoanRepository {
+~ List<BookLoan> findByBorrowerAndStatus(AppUser,LoanStatus)
+~ List<BookLoan> findByStatusAndDueDateBefore(LoanStatus,Date)
+~ Page<BookLoan> findByStatusAndDueDateBefore(LoanStatus,Date,PageRequest)
+~ Page<BookLoan> findByBorrowerAndStatus(AppUser,LoanStatus,PageRequest)
+~ Page<BookLoan> findByBorrowerAndStatusIn(AppUser,List<LoanStatus>,PageRequest)
+~ List<BookLoan> findByStatus(LoanStatus)
+~ List<BookLoanSummaryDto> findMostLoanedBooks(Date,Date,Pageable)
+~ Page<BookLoan> findByBorrowedAtBetween(Date,Date,Pageable)
+~ List<BookLoan> findByBorrowedAtBetween(Date,Date)
+~ List<CategoryLoanSummaryDto> findCategoryLoanSummary(Date,Date)
+~ BookLoan findByBookAndBorrowerAndStatus(Book,AppUser,LoanStatus)
+~ Page<BookLoan> findByBookTitleContaining(String,PageRequest)
+}
+
+interface org.library.library.repository.CategoryRepository {
+~ List<Category> findByBooksIsbn(String)
+}
+
+class org.library.library.controller.InventoryController {
+- InventoryService inventoryService
++ String listInventory(Model,int)
++ String showInventoryDetailsAndAdjustForm(String,Model)
++ String adjustQuantity(String,QuantityAdjustmentDto,BindingResult,Model)
++ String deleteInventory(Long)
+}
+
+
+class org.library.library.dto.CategoryDto {
+- Long id
+- String name
+}
+
+class org.library.library.mapper.AppUserMapper {
++ {static} AppUserDto mapToAppUserDto(AppUser)
+}
+
+class org.library.library.service.impl.BookServiceImpl {
+- BookRepository bookRepository
+- AppUserRepository appUserRepository
+- BookInventoryRepository bookInventoryRepository
+- BookLoanService bookLoanService
+- BookSelectionRepository bookSelectionRepository
+- RatingRepository ratingRepository
++ List<BookListDto> findAll()
++ Book findByIsbn(String)
++ Book save(Book)
++ BookInventory saveInvetory(BookInventory)
++ void update(Book)
++ void delete(Book)
++ Book addBook(Book)
++ List<BookListDto> findByAuthorId(Long)
++ Page<BookListDto> findAllPaginated(PageRequest)
++ Page<BookListDto> findByCategoryIdsPaginated(List<Long>,PageRequest)
++ Page<BookListDto> findByTitleOrIsbnContainingPaginated(String,String,PageRequest)
++ List<BookListDto> getTopNMostLoanedBooks()
++ List<BookListDto> getBookSelection()
++ Page<BookListDto> findByRatingAndCategoriesPaginated(Float,List<Long>,PageRequest)
++ Page<BookListDto> findByRatingPaginated(Float,PageRequest)
+}
+
+
+class org.library.library.dto.BookLoanSummaryDto {
+- String isbn
+- String title
+- Long loanCount
+}
+
+class org.library.library.dto.NewAuthorDto {
+- String firstName
+- String lastName
+}
+
+interface org.library.library.repository.BookSelectionRepository {
+}
+class org.library.library.controller.LoanController {
+- BookLoanService loanService
+- AppUserService appUserService
++ String borrowBook(String)
++ String returnBook(Long)
++ String myLoans(Model,String,String,int,int)
++ String getUserLoans(String,Model,int,int)
++ String extendLoan(Long,String)
+}
+
+
+class org.library.library.controller.CategoryController {
+- CategoryService categoryService
++ String showAddCategoryForm(Model)
++ String addCategory(NewCategoryDto)
++ String showCategories(Model)
+}
+
+
+class org.library.library.mapper.RatingMapper {
++ {static} RatingDto mapToRatingDto(Rating)
+}
+
+interface org.library.library.repository.AuthorRepository {
+~ List<Author> findByBooksIsbn(String)
+}
+
+interface org.library.library.service.AuthorService {
+~ List<Author> findAll()
+~ Author findById(Long)
+~ Author save(Author)
+~ List<AuthorDto> findByBookIsbn(String)
+}
+
+class org.library.library.model.Rating {
+- Long id
+- AppUser user
+- Book book
+- Float score
++ void setScore(Float)
+}
+
+
+class org.library.library.LibraryApplication {
++ {static} void main(String[])
+}
+
+class org.library.library.mapper.AuthorMapper {
++ {static} AuthorDto mapToAuthorDto(Author)
+}
+
+class org.library.library.security.CustomUserDetailsService {
+- AppUserRepository appUserRepository
++ UserDetails loadUserByUsername(String)
+}
+
+
+class org.library.library.model.BookInventory {
+- Long id
+- Book book
+- Integer totalQuantity
+- Integer availableQuantity
+}
+
+class org.library.library.service.impl.InventoryServiceImpl {
+- BookInventoryRepository bookInventoryRepository
++ Page<BookInventory> getInventories(PageRequest)
++ BookInventory getInventory(String)
++ BookInventory adjustQuantity(String,QuantityAdjustmentDto)
++ void deleteInventory(Long)
+}
+
+
+class org.library.library.model.Book {
+- String isbn
+- String title
+- String description
+- String coverUrl
+- Date releaseDate
+- Boolean isAvailable
+- Set<Rating> ratings
+- Set<Author> authors
+- Set<Category> categories
+- AppUser createdBy
++ int hashCode()
+}
+
+
+class org.library.library.service.impl.NotificationServiceImpl {
+- NotificationRepository notificationRepository
+- BookLoanRepository bookLoanRepository
+- AppUserService appUserService
++ void createNotification(AppUser,String)
++ List<Notification> getUnreadNotifications(AppUser)
++ void updateOverdueLoans()
++ void checkLoanDueDates()
++ List<Notification> getUnreadNotifications()
++ void markAsRead(Long)
++ List<Notification> getAllNotificationsByUser(AppUser)
+}
+
+
+interface org.library.library.repository.RoleRepository {
+~ Role findByName(String)
+}
+
+class org.library.library.controller.CsvExportController {
+- CsvExportService csvExportService
+- BookLoanService bookLoanService
++ ResponseEntity<byte[]> exportStatistics(String,String)
+}
+
+
+enum org.library.library.model.LoanStatus {
++  ACTIVE
++  OVERDUE
++  RETURNED
+}
+
+class org.library.library.model.Category {
+- Long id
+- String name
+- Set<Book> books
+}
+
+class org.library.library.dto.BookListDto {
+- String isbn
+- String title
+- String coverUrl
+- Date releaseDate
+- Boolean isAvailable
+- Set<AuthorDto> authors
+- double rating
+}
+
+interface org.library.library.service.BookLoanService {
+~ BookLoan borrowBook(String)
+~ boolean hasOverdueBooks(AppUser)
+~ BookLoan returnBook(Long)
+~ List<BookLoan> getActiveLoans()
+~ Page<BookLoan> getPersonalLoansByStatusPaginated(String,PageRequest)
+~ List<BookLoan> getPersonalLoansByStatus(String)
+~ Page<BookLoan> getAllPersonalLoansPaginated(PageRequest)
+~ Page<BookLoan> getAllLoansPaginated(Pageable,Date,Date)
+~ List<BookLoan> getAllLoans(Date,Date)
+~ Map<String,Long> getBookLoansGroupedByMonth()
+~ List<BookLoanSummaryDto> getTopNMostLoanedBooks(LoanStatus,int,LocalDateTime,LocalDateTime)
+~ List<BookLoanSummaryDto> getTopNMostLoanedBooks(LoanStatus,int)
+~ List<CategoryLoanSummaryDto> findCategoryLoanSummary(Date,Date)
+~ List<CategoryLoanSummaryDto> findCategoryLoanSummary()
+~ BookLoanDto getBookLoanByBookAndBorrower(Book,AppUser)
+~ Page<BookLoan> findBooksByBookStartingWithTitlePaginated(String,PageRequest)
+~ Page<BookLoan> findBooksByBorrowerAndStatusIn(AppUser,List<LoanStatus>,PageRequest)
+}
+
+interface org.library.library.repository.RatingRepository {
+~ List<Rating> findByUserUsername(String)
+~ List<Rating> findByBookIsbn(String)
+~ Float findAverageRatingByBookIsbn(String)
+~ List<RatingSummaryDto> findHighestRatingSummary()
+}
+
+class org.library.library.mapper.SqlToBookListDtoMapper {
++ {static} BookListDto mapToBookListDto(Object[])
+}
+
+class org.library.library.controller.HomeController {
+- BookService bookService
+- BookLoanService bookLoanService
+- RatingService ratingService
++ String redictToHome()
++ String getAllBooks(Model)
+}
+
+
+class org.library.library.scheduler.NotificationScheduler {
+- NotificationService notificationService
++ void checkLoanDueDates()
+}
+
+
+interface org.library.library.service.CategoryService {
+~ List<Category> findAll()
+~ Category findById(Long)
+~ Category save(Category)
+~ List<CategoryDto> findByBooksIsbn(String)
+}
+
+class org.library.library.service.impl.AuthorServiceImpl {
+- AuthorRepository authorRepository
++ List<Author> findAll()
++ Author findById(Long)
++ Author save(Author)
++ List<AuthorDto> findByBookIsbn(String)
+}
+
+
+class org.library.library.dto.AppUserDto {
+- String username
+- String firstName
+- String lastName
+}
+
+class org.library.library.model.Author {
+- Long id
+- String firstName
+- String lastName
+- Set<Book> books
+}
+
+class org.library.library.dto.RatingDto {
+- Long id
+- float score
+- String isbn
+- String username
+}
+
+class org.library.library.controller.NotificationController {
+- NotificationService notificationService
+- AppUserService appUserService
++ List<Notification> sendDueDateReminder()
++ ResponseEntity<Void> markAsRead(Long)
++ ModelAndView getAllNotificationsAdmin()
++ ModelAndView getAllNotificationsLibrary()
+}
+
+
+class org.library.library.controller.BookController {
+- BookService bookService
+- AuthorService authorService
+- CategoryService categoryService
+- BookLoanService bookLoanService
+- AppUserService appUserService
+- RatingService ratingService
++ String listBooks(int,int,List<Long>,Float,String,Model)
++ String getAllBooks(String,Model)
++ String showAddBookForm(Model)
++ String addBook(BookDto)
++ String getAllBooks(Model)
++ String showModifyBookForm(String,Model)
++ String updateBook(String,BookDto)
++ String deleteBook(String)
+}
+
+
+class org.library.library.dto.RatingSummaryDto {
+- Double averageScore
+- Long ratingCount
+- String isbn
+}
+
+class org.library.library.dto.BookLoanDto {
+- String isbn
+- boolean isBorrowed
+}
+
+class org.library.library.service.impl.CsvExportServiceImpl {
++ byte[] ExportStatisticsToCsv(List<BookLoan>)
+}
+
+interface org.library.library.service.AppUserService {
+~ void saveUser(RegistrationDto)
+~ AppUser getAuthenticatedUser()
+~ AppUser findByUsername(String)
+~ long countAllUsers()
+~ Page<AppUser> getAllUsersPaginated(PageRequest)
+~ Page<AppUser> getAllUsersByUsernamePaginated(String,PageRequest)
+}
+
+interface org.library.library.repository.NotificationRepository {
+~ List<Notification> findByUserAndIsReadFalse(AppUser)
+~ List<Notification> findByUser(AppUser)
+}
+
+interface org.library.library.service.BookService {
+~ List<BookListDto> findAll()
+~ Book findByIsbn(String)
+~ Book save(Book)
+~ BookInventory saveInvetory(BookInventory)
+~ void update(Book)
+~ void delete(Book)
+~ Book addBook(Book)
+~ List<BookListDto> findByAuthorId(Long)
+~ Page<BookListDto> findAllPaginated(PageRequest)
+~ Page<BookListDto> findByCategoryIdsPaginated(List<Long>,PageRequest)
+~ Page<BookListDto> findByTitleOrIsbnContainingPaginated(String,String,PageRequest)
+~ List<BookListDto> getTopNMostLoanedBooks()
+~ List<BookListDto> getBookSelection()
+~ Page<BookListDto> findByRatingAndCategoriesPaginated(Float,List<Long>,PageRequest)
+~ Page<BookListDto> findByRatingPaginated(Float,PageRequest)
+}
+
+class org.library.library.security.SecurityConfig {
+- CustomUserDetailsService customUserDetailsService
++ {static} PasswordEncoder passwordEncoder()
++ SecurityFilterChain securityFilterChain(HttpSecurity)
++ void configure(AuthenticationManagerBuilder)
++ SpringSecurityDialect springSecurityDialect()
+}
+
+
+class org.library.library.model.AppUser {
+- String username
+- String password
+- String firstName
+- String lastName
+- Set<Role> roles
+- Set<Rating> ratings
+}
+
+class org.library.library.model.Notification {
+- Long id
+- AppUser user
+- String message
+- boolean isRead
+- Date createdAt
+}
+
+class org.library.library.mapper.CategoryMapper {
++ {static} CategoryDto mapToCategoryDto(Category)
+}
+
+interface org.library.library.repository.BookRepository {
+~ Book findByIsbn(String)
+~ List<Book> findBooksByAuthorsId(Long)
+~ Page<Book> findByCategoriesId(Long,Pageable)
+}
+
+class org.library.library.model.BookSelection {
+- Long id
+- Book book
+}
+
+class org.library.library.service.impl.CategoryServiceImpl {
+- CategoryRepository categoryRepository
++ List<Category> findAll()
++ Category findById(Long)
++ Category save(Category)
++ List<CategoryDto> findByBooksIsbn(String)
+}
+
+
+
+
+org.library.library.service.AppUserService <|.. org.library.library.service.impl.AppUserServiceImpl
+org.library.library.service.RatingService <|.. org.library.library.service.impl.RatingServiceImpl
+org.springframework.data.jpa.repository.JpaRepository <|-- org.library.library.repository.BookInventoryRepository
+org.library.library.service.BookLoanService <|.. org.library.library.service.impl.BookLoanServiceImpl
+org.springframework.data.jpa.repository.JpaRepository <|-- org.library.library.repository.AppUserRepository
+org.springframework.data.jpa.repository.JpaRepository <|-- org.library.library.repository.BookLoanRepository
+org.springframework.data.jpa.repository.JpaRepository <|-- org.library.library.repository.CategoryRepository
+org.library.library.service.BookService <|.. org.library.library.service.impl.BookServiceImpl
+org.springframework.data.jpa.repository.JpaRepository <|-- org.library.library.repository.BookSelectionRepository
+org.springframework.data.jpa.repository.JpaRepository <|-- org.library.library.repository.AuthorRepository
+org.springframework.security.core.userdetails.UserDetailsService <|.. org.library.library.security.CustomUserDetailsService
+org.library.library.service.InventoryService <|.. org.library.library.service.impl.InventoryServiceImpl
+org.library.library.service.NotificationService <|.. org.library.library.service.impl.NotificationServiceImpl
+org.springframework.data.jpa.repository.JpaRepository <|-- org.library.library.repository.RoleRepository
+org.springframework.data.jpa.repository.JpaRepository <|-- org.library.library.repository.RatingRepository
+org.library.library.service.AuthorService <|.. org.library.library.service.impl.AuthorServiceImpl
+org.library.library.service.CsvExportService <|.. org.library.library.service.impl.CsvExportServiceImpl
+org.springframework.data.jpa.repository.JpaRepository <|-- org.library.library.repository.NotificationRepository
+org.springframework.data.jpa.repository.JpaRepository <|-- org.library.library.repository.BookRepository
+org.library.library.service.CategoryService <|.. org.library.library.service.impl.CategoryServiceImpl
+@enduml
