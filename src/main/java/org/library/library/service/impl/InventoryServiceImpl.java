@@ -31,11 +31,17 @@ public class InventoryServiceImpl implements InventoryService {
     public BookInventory adjustQuantity(String isbn, QuantityAdjustmentDto quantityAdjustmentDto) {
         BookInventory bookInventory = bookInventoryRepository.findByBookIsbn(isbn).stream().findFirst().orElse(null);
 
+        assert bookInventory != null;
+        Integer difference = bookInventory.getTotalQuantity() - bookInventory.getAvailableQuantity();
+
         if (quantityAdjustmentDto.getType() == QuantityAdjustmentDto.AdjustmentType.INCREASE) {
+            bookInventory.setAvailableQuantity((bookInventory.getTotalQuantity() + quantityAdjustmentDto.getQuantity()) - difference);
             bookInventory.setTotalQuantity(bookInventory.getTotalQuantity() + quantityAdjustmentDto.getQuantity());
         } else if (quantityAdjustmentDto.getType() == QuantityAdjustmentDto.AdjustmentType.DECREASE) {
+            bookInventory.setAvailableQuantity((bookInventory.getTotalQuantity() - quantityAdjustmentDto.getQuantity()) - difference);
             bookInventory.setTotalQuantity((bookInventory.getTotalQuantity() - quantityAdjustmentDto.getQuantity()));
         } else if ( quantityAdjustmentDto.getType() == QuantityAdjustmentDto.AdjustmentType.SET) {
+            bookInventory.setAvailableQuantity(quantityAdjustmentDto.getQuantity() - difference);
             bookInventory.setTotalQuantity(quantityAdjustmentDto.getQuantity());
         }
         else {
